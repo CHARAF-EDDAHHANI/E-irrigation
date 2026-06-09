@@ -127,8 +127,8 @@ def login():
         "auth_token",
         token,
         httponly=True,
-        secure=False, #<<<<<<<TRUE in production HTTPS>>>>>>>>>>>>>>>
-        samesite="Lax",
+        secure=True, #change btwn prod. and dev.
+        samesite="none",
         max_age= 8 * 3600,
     )
     return response
