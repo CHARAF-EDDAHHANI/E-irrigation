@@ -11,12 +11,12 @@ from engine.storage_conception import (
     delete_conceptions_by_folder,
 )
 
-api_conception = Blueprint("api_conception", __name__)
+api_conception = Blueprint("api_conception", __name__, url_prefix="/api")
 
 # ─────────────────────────────────────────
 # HEALTH
 # ─────────────────────────────────────────
-@api_conception.route("/api/health", methods=["GET"])
+@api_conception.route("/health", methods=["GET"])
 def health():
     return jsonify({
         "status": "ok",
@@ -27,7 +27,7 @@ def health():
 # ─────────────────────────────────────────
 # CALCULATE (UNCHANGED)
 # ─────────────────────────────────────────
-@api_conception.route("/api/calculate", methods=["POST"])
+@api_conception.route("/calculate", methods=["POST"])
 def calculate():
     try:
         payload = request.get_json(force=True)
@@ -55,7 +55,7 @@ def calculate():
 # ─────────────────────────────────────────
 # SAVE (UPSERT = CREATE OR UPDATE)
 # ─────────────────────────────────────────
-@api_conception.route("/api/conceptions/save", methods=["POST"])
+@api_conception.route("/conceptions/save", methods=["POST"])
 def save():
     try:
         body = request.get_json(force=True)
@@ -100,7 +100,7 @@ def save():
 # ─────────────────────────────────────────
 # GET BY FOLDER (ONLY ONE EXPECTED)
 # ─────────────────────────────────────────
-@api_conception.route("/api/conceptions/<folder_id>", methods=["GET"])
+@api_conception.route("/conceptions/<folder_id>", methods=["GET"])
 def get_by_folder(folder_id):
     records = get_conceptions_by_folder(folder_id)
 
@@ -119,7 +119,7 @@ def get_by_folder(folder_id):
 # ─────────────────────────────────────────
 # GET BY ID
 # ─────────────────────────────────────────
-@api_conception.route("/api/conceptions/<conception_id>", methods=["GET"])
+@api_conception.route("/conceptions/<conception_id>", methods=["GET"])
 def get_conception(conception_id):
     record = get_conception_by_id(conception_id)
 
@@ -138,7 +138,7 @@ def get_conception(conception_id):
 # ─────────────────────────────────────────
 # DELETE SINGLE
 # ─────────────────────────────────────────
-@api_conception.route("/api/conceptions/<conception_id>", methods=["DELETE"])
+@api_conception.route("/conceptions/<conception_id>", methods=["DELETE"])
 def delete(conception_id):
     ok = delete_conception(conception_id)
 
@@ -157,7 +157,7 @@ def delete(conception_id):
 # ─────────────────────────────────────────
 # DELETE BY FOLDER
 # ─────────────────────────────────────────
-@api_conception.route("/api/conceptions/folder/<folder_id>", methods=["DELETE"])
+@api_conception.route("/conceptions/folder/<folder_id>", methods=["DELETE"])
 def delete_folder(folder_id):
     deleted = delete_conceptions_by_folder(folder_id)
 

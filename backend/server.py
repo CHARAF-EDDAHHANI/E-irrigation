@@ -32,7 +32,8 @@ CORS(
     app,
     supports_credentials=True,
     origins=[
-        "http://localhost:5173"
+        "http://localhost:5173",
+        "https://e-irrigation-ormvam.netlify.app"
     ])
 
 # Register the API blueprints to mount the application routes from different modules
