@@ -26,7 +26,6 @@ lerna-debug.log*
 backend/venv/
 backend/.env
 backend/cookies.txt
-backend/db/
 
 # ── SYSTEM & EDITORS ──────────────────────────────────────────────────────────
 .vscode/*
