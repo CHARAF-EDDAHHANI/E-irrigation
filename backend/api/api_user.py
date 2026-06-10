@@ -129,6 +129,7 @@ def login():
         httponly=True,
         secure=True, #change btwn prod. and dev.
         samesite="none",
+        path="/",
         max_age= 8 * 3600,
     )
     return response
@@ -160,7 +161,11 @@ def logout():
 
     response.delete_cookie(
         "auth_token",
-        path="/login"
+        expires=0,
+        path="/",
+        httponly=True,
+        secure=True,
+        samesite="None"
     )
 
     return response
