@@ -159,7 +159,7 @@ def logout():
         jsonify({"message": "Vous êtes maintenant déconnecté."})
     )
 
-    response.delete_cookie(
+    response.set_cookie(
         "auth_token",
         expires=0,
         path="/",
