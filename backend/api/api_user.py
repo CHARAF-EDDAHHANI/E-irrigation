@@ -128,7 +128,7 @@ def login():
         token,
         httponly=True,
         secure=True, #change btwn prod. and dev.
-        samesite="none",
+        samesite="None",
         path="/",
         max_age= 8 * 3600,
     )
