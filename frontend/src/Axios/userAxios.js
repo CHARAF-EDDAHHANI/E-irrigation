@@ -43,14 +43,12 @@ export const registerAxios = async (formData) => {
     }
 };
 
-// Logout - Déconnexion de l'utilisateur
+// Logout
 export const logoutAxios = async () => {
     try {
-        // Envoie de la requête POST au backend Flask pour détruire le cookie
         const response = await api.post("/logout");
         return response.data;
     } catch (error) {
-        // Extraction et traitement du message d'erreur renvoyé par le serveur
         const errorMsg =
             error.response?.data?.message || 
             error.message || 

@@ -154,14 +154,13 @@ def auth_me():
 
 @api_user.route("/logout", methods=["POST"])
 def logout():
-    response = make_response(jsonify({"message": "Vous êtes maintenant déconnecté."}))
+    response = make_response(
+        jsonify({"message": "Vous êtes maintenant déconnecté."})
+    )
 
-    response.set_cookie(
+    response.delete_cookie(
         "auth_token",
-        "",
-        expires=0,
-        httponly=True,
-        samesite="Lax"
+        path="/login"
     )
 
     return response
