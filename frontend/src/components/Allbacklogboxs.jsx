@@ -50,10 +50,21 @@ const avatarColor = (str = "") =>
   AVATAR_COLORS[str.charCodeAt(0) % AVATAR_COLORS.length];
 
 // ── BACKLOG ITEM ROW ──────────────────────────────────────────────────────────
-function BacklogRow({ box, isActive, onClick }) {
+function BacklogRow({ box, folders = [], isActive, onClick }) {
+
+  // 1. CE LOG VA TOUT AFFICHER DANS L'INSPECTEUR (CONSOLE)
+  console.log("=== INSPECTEUR BACKLOGROW ===");
+  console.log("Ma boîte actuelle (box) :", box);
+  console.log("Liste de tous les dossiers (folders) reçus :", folders);
+
+  const currentFolder = folders.find(f => f.folder_id === box.folder_id);
+  
+  const folderName = currentFolder?.folder_name || box.folder_name || box.folder_id || "Dossier Inconnu";
+
   const lastMsg   = box.messages?.[box.messages.length - 1];
   const unread    = box.unread_count || 0;
-  const initial   = (box.folder_name || box.folder_id || "?")[0].toUpperCase();
+  
+  const initial   = folderName[0].toUpperCase();
   const col       = avatarColor(box.folder_id || "");
 
   return (
@@ -92,34 +103,59 @@ function BacklogRow({ box, isActive, onClick }) {
         </Avatar>
       </Badge>
 
-      {/* Content */}
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" mb="2px">
-          <Typography sx={{
-            fontSize: 13, fontWeight: unread > 0 ? 800 : 600,
-            color: T.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-            maxWidth: "65%",
-          }}>
-            {box.folder_name || box.folder_id}
-          </Typography>
-          <Typography sx={{ fontSize: 10.5, color: T.muted, flexShrink: 0 }}>
-            {fmtTime(lastMsg?.created_at || box.created_at)}
-          </Typography>
-        </Stack>
+     {/* Content */}
+<Box sx={{ flex: 1, minWidth: 0 }}>
+  {/* Ligne 1 : Le nom du dossier */}
+  <Typography sx={{
+    fontSize: 13, 
+    fontWeight: unread > 0 ? 800 : 600,
+    color: T.text, 
+    overflow: "hidden", 
+    textOverflow: "ellipsis", 
+    whiteSpace: "nowrap",
+    mb: "2px" // Un petit espace sous le nom
+  }}>
+    {folderName}
+  </Typography>
 
-        <Typography sx={{
-          fontSize: 12, color: unread > 0 ? T.sub : T.muted,
-          fontWeight: unread > 0 ? 600 : 400,
-          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-        }}>
-          {lastMsg
-            ? `${lastMsg.sender_name || "Agent"}: ${lastMsg.content}`
-            : "Aucun message"}
-        </Typography>
-      </Box>
+  {/* Ligne 2 : Le dernier message et le rôle */}
+  <Typography sx={{
+    fontSize: 12, 
+    color: unread > 0 ? T.sub : T.muted,
+    fontWeight: unread > 0 ? 600 : 400,
+    overflow: "hidden", 
+    textOverflow: "ellipsis", 
+    whiteSpace: "nowrap",
+    mb: "4px" // Un petit espace sous le message
+  }}>
+    {lastMsg ? (
+      (() => {
+        if (lastMsg.sender_name) return `${lastMsg.sender_name}: ${lastMsg.content}`;
+        const roleLabels = {
+          admin: "Admin",
+          agent: "Agent",
+          company: "Société",
+          farmer: "Agriculteur"
+        };
+        
+        const role = roleLabels[lastMsg.sender_type] || "Utilisateur";
+        return `${role}: ${lastMsg.content}`;
+      })()
+    ) : (
+      "Aucun message"
+    )}
+  </Typography>
+
+  {/* Ligne 3 : L'heure du message */}
+  <Typography sx={{ fontSize: 10.5, color: T.muted, display: "block" }}>
+    {fmtTime(lastMsg?.created_at || box.created_at)}
+  </Typography>
+</Box>
+
     </Box>
   );
 }
+
 
 // ── EMPTY STATE ───────────────────────────────────────────────────────────────
 function EmptyState({ search }) {
@@ -168,13 +204,15 @@ function SelectPrompt() {
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
-export default function AllBacklogboxs({ currentUser }) {
+export default function AllBacklogboxs({ currentUser, folders = [] }) {
   const [backlogs,    setBacklogs]    = useState([]);
   const [loading,     setLoading]     = useState(true);
   const [error,       setError]       = useState(null);
   const [search,      setSearch]      = useState("");
-  const [activeBox,   setActiveBox]   = useState(null);  // selected backlog
+  const [activeBox,   setActiveBox]   = useState(null);  
   const [drawerOpen,  setDrawerOpen]  = useState(false);
+    console.log("Liste 44444 de tous les dossiers (folders) reçus :", folders);
+
 
   useEffect(() => {
     fetchbacklogboxs()
@@ -297,7 +335,8 @@ export default function AllBacklogboxs({ currentUser }) {
             <BacklogRow
               key={box.backlog_id || box.folder_id}
               box={box}
-              isActive={activeBox?.backlog_id === box.backlog_id}
+              folders={folders} 
+              isActive={activeBox === box.backlogbox_id}
               onClick={() => handleSelect(box)}
             />
           ))}
@@ -351,10 +390,9 @@ export default function AllBacklogboxs({ currentUser }) {
         <ChatDrawer 
           open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
-          folder={{ folder_id: backlogs.find(b => b.backlogbox_id === activeBox)?.folder_id }}
           currentUser={currentUser}
+          folder={folders.find(f => f.folder_id === backlogs.find(b => b.backlogbox_id === activeBox)?.folder_id)}
         />
-
     </Box>
   );
 }

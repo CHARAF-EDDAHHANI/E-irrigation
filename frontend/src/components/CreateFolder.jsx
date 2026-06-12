@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Card, Chip, CircularProgress, Grid, InputAdornment, LinearProgress, MenuItem, Snackbar, Alert, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button,Paper, Card, Chip, CircularProgress, Grid, InputAdornment, LinearProgress, MenuItem, Snackbar, Alert, Stack, TextField, Typography } from "@mui/material";
 import { Agriculture, Article, AttachMoney, CheckCircle, FolderOpen, Person, Save } from "@mui/icons-material";
 import { alpha } from "@mui/material/styles";
 import { CreateFolderAxios } from "../Axios/folderAxios";
@@ -72,113 +72,203 @@ export default function CreateFolder({ onCreate }) {
   const completion = pct(form);
   const hasErrors  = Object.keys(errors).length > 0;
 
-  return (
-    <Box sx={{ minHeight:"100vh", bgcolor:T.bg, p:{ xs:2, md:4 } }}>
-      <Box sx={{ maxWidth:1400, mx:"auto" }}>
+return (
+  <Box sx={{ minHeight: "100vh", bgcolor: T.bg, p: { xs: 2, md: 3 }, fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
+    <Box sx={{ maxWidth: 1400, mx: "auto" }}>
 
-        {/* HEADER */}
-        <Card elevation={0} sx={{ mb:3, p:3, borderRadius:2, border:`1px solid ${T.border}` }}>
-          <Stack direction={{ xs:"column", md:"row" }} justifyContent="space-between" spacing={2}>
-            <Box>
-              <Typography sx={{ fontSize:26, fontWeight:800, color:T.text }}>Nouveau Dossier</Typography>
-              <Typography sx={{ color:T.textSub, mt:0.5 }}>Gestion des projets d'irrigation</Typography>
-            </Box>
-            <Box sx={{ minWidth:220 }}>
-              <Stack direction="row" justifyContent="space-between" mb={1}>
-                <Typography fontSize={13}>Complétion</Typography>
-                <Typography fontSize={13} fontWeight={700}>{completion}%</Typography>
-              </Stack>
-              <LinearProgress variant="determinate" value={completion} sx={{ height:8, borderRadius:999 }} />
-            </Box>
+      {/* HEADER */}
+      <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 2 }}>
+        <Box>
+          <Typography sx={{ fontSize: 18, fontWeight: 500, color: T.text, lineHeight: 1 }}>
+            Nouveau dossier
+          </Typography>
+          <Typography sx={{ fontSize: 12, color: T.muted, mt: "3px" }}>
+            Gestion des projets d'irrigation
+          </Typography>
+        </Box>
+        <Box sx={{ minWidth: 200 }}>
+          <Stack direction="row" justifyContent="space-between" mb={0.75}>
+            <Typography sx={{ fontSize: 12, color: T.muted }}>Complétion</Typography>
+            <Typography sx={{ fontSize: 12, fontWeight: 500, color: T.text }}>{completion}%</Typography>
           </Stack>
-        </Card>
-
-        <Grid container spacing={3}>
-          {/* FORM */}
-          <Grid item xs={12} md={8}>
-            <Stack spacing={3}>
-              {SECTIONS.map(sec => (
-                <Card key={sec.title} elevation={0} sx={{ borderRadius:2, border:`1px solid ${T.border}`, overflow:"hidden" }}>
-                  <Box sx={{ p:2, bgcolor:sec.bg, borderBottom:`1px solid ${T.border}` }}>
-                    <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Box sx={{ width:34, height:34, borderRadius:2, bgcolor:alpha(sec.color, 0.12), color:sec.color, display:"flex", alignItems:"center", justifyContent:"center" }}>
-                        {sec.icon}
-                      </Box>
-                      <Typography fontWeight={700} fontSize={15}>{sec.title}</Typography>
-                    </Stack>
-                  </Box>
-                  <Box sx={{ p:3 }}>
-                    <Grid container spacing={2}>
-                      {sec.fields.map(f => (
-                        <Grid item xs={12} md={f.md} key={f.name}>
-                          <TextField fullWidth size="small"
-                            label={f.required ? `${f.label} *` : f.label}
-                            name={f.name} value={form[f.name]} onChange={handleChange}
-                            type={f.type || "text"} select={f.type === "select"}
-                            multiline={f.multiline} rows={f.rows}
-                            error={!!errors[f.name]} helperText={errors[f.name]}
-                            InputProps={{
-                              startAdornment: f.icon && <InputAdornment position="start">{f.icon}</InputAdornment>,
-                              endAdornment:   f.adornment && <InputAdornment position="end">{f.adornment}</InputAdornment>,
-                            }}
-                            sx={{ "& .MuiOutlinedInput-root": { borderRadius:"8px" } }}
-                          >
-                            {f.type === "select" && f.options.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
-                          </TextField>
-                        </Grid>
-                      ))}
-                    </Grid>
-                  </Box>
-                </Card>
-              ))}
-            </Stack>
-          </Grid>
-
-          {/* SIDEBAR */}
-          <Grid item xs={12} md={4}>
-            <Stack spacing={2} sx={{ position:"sticky", top:24 }}>
-              <Card elevation={0} sx={{ p:3, borderRadius:2, border:`1px solid ${T.border}` }}>
-                <Typography fontWeight={700} mb={2}>Aperçu</Typography>
-                <Stack spacing={1.5}>
-                  {[["Exploitant", form.beneficiary_name], ["CIN", form.national_id], ["Culture", form.crop], ["Superficie", form.area ? `${form.area} ha` : ""]].map(([lbl, val]) => (
-                    <Box key={lbl}>
-                      <Typography fontSize={11} color={T.textMuted} textTransform="uppercase" letterSpacing="0.06em">{lbl}</Typography>
-                      <Typography fontWeight={600} fontSize={13}>{val || "—"}</Typography>
-                    </Box>
-                  ))}
-                  <Box>
-                    <Typography fontSize={11} color={T.textMuted} textTransform="uppercase" letterSpacing="0.06em">Phase</Typography>
-                    <Chip size="small" label={form.phase || "—"} sx={{ mt:"3px", bgcolor: form.phase ? alpha(T.green, 0.1) : T.bg, color: form.phase ? T.green : T.textMuted, fontWeight:600, fontSize:11 }} />
-                  </Box>
-                </Stack>
-              </Card>
-
-              <Button fullWidth variant="contained" size="large" onClick={handleSubmit} disabled={loading}
-                startIcon={loading ? <CircularProgress size={18} color="inherit"/> : <Save/>}
-                sx={{ height:50, borderRadius:2, textTransform:"none", fontWeight:700, fontSize:14, bgcolor:T.green, "&:hover":{ bgcolor:"#166534" } }}>
-                {loading ? "Création..." : "Créer le dossier"}
-              </Button>
-
-              {hasErrors && (
-                <Box sx={{ p:1.5, borderRadius:2, border:`1px solid ${alpha(T.error, 0.2)}`, bgcolor:T.errorBg }}>
-                  <Typography fontSize={12} color={T.error}>Veuillez corriger les erreurs.</Typography>
-                </Box>
-              )}
-
-              {completion === 100 && !hasErrors && (
-                <Box sx={{ p:1.5, borderRadius:2, border:`1px solid ${T.greenBorder}`, bgcolor:T.greenBg, display:"flex", alignItems:"center", gap:1 }}>
-                  <CheckCircle sx={{ color:T.green, fontSize:16 }}/>
-                  <Typography fontSize={12} color={T.green} fontWeight={600}>Formulaire complet.</Typography>
-                </Box>
-              )}
-            </Stack>
-          </Grid>
-        </Grid>
+          <LinearProgress
+            variant="determinate"
+            value={completion}
+            sx={{
+              height: 4, borderRadius: 999,
+              bgcolor: T.border,
+              "& .MuiLinearProgress-bar": { bgcolor: T.green, borderRadius: 999 },
+            }}
+          />
+        </Box>
       </Box>
 
-      <Snackbar open={snack.open} autoHideDuration={4000} onClose={() => setSnack(p => ({ ...p, open:false }))} anchorOrigin={{ vertical:"bottom", horizontal:"center" }}>
-        <Alert severity={snack.severity} variant="filled" onClose={() => setSnack(p => ({ ...p, open:false }))}>{snack.message}</Alert>
-      </Snackbar>
+      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 320px" }, gap: "20px" }}>
+
+        {/* FORM */}
+        <Stack spacing={2}>
+          {SECTIONS.map(sec => (
+            <Paper key={sec.title} elevation={0} sx={{ borderRadius: "12px", border: `0.5px solid ${T.border}`, overflow: "hidden", bgcolor: T.surface }}>
+
+              {/* SECTION HEADER */}
+              <Box sx={{ px: 2.5, py: 1.5, display: "flex", alignItems: "center", gap: 1.25, borderBottom: `0.5px solid ${T.border}` }}>
+                <Box sx={{
+                  width: 30, height: 30, borderRadius: "8px", flexShrink: 0,
+                  bgcolor: alpha(sec.color, 0.1),
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: sec.color,
+                }}>
+                  {sec.icon}
+                </Box>
+                <Typography sx={{ fontSize: 14, fontWeight: 500, color: T.text }}>{sec.title}</Typography>
+              </Box>
+
+              {/* FIELDS */}
+              <Box sx={{ p: 2.5 }}>
+                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: "12px" }}>
+                  {sec.fields.map(f => (
+                    <Box key={f.name} sx={{ gridColumn: `span ${f.md || 6}` }}>
+                      <Typography sx={{ fontSize: 11, fontWeight: 500, color: T.muted, textTransform: "uppercase", letterSpacing: "0.06em", mb: "6px" }}>
+                        {f.label}{f.required ? " *" : ""}
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        name={f.name}
+                        value={form[f.name]}
+                        onChange={handleChange}
+                        type={f.type || "text"}
+                        select={f.type === "select"}
+                        multiline={f.multiline}
+                        rows={f.rows}
+                        error={!!errors[f.name]}
+                        helperText={errors[f.name]}
+                        InputProps={{
+                          startAdornment: f.icon && <InputAdornment position="start">{f.icon}</InputAdornment>,
+                          endAdornment: f.adornment && <InputAdornment position="end">{f.adornment}</InputAdornment>,
+                        }}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            borderRadius: "8px", fontSize: 13, bgcolor: T.bg,
+                            "& fieldset": { borderColor: T.border, borderWidth: "0.5px" },
+                            "&:hover fieldset": { borderColor: T.sub },
+                            "&.Mui-focused fieldset": { borderColor: T.green, borderWidth: "1px" },
+                          },
+                          "& .MuiFormHelperText-root": { fontSize: 11, mt: "4px" },
+                        }}
+                      >
+                        {f.type === "select" && f.options.map(o => (
+                          <MenuItem key={o.value} value={o.value} sx={{ fontSize: 13 }}>{o.label}</MenuItem>
+                        ))}
+                      </TextField>
+                    </Box>
+                  ))}
+                </Box>
+              </Box>
+            </Paper>
+          ))}
+        </Stack>
+
+        {/* SIDEBAR */}
+        <Box sx={{ position: "sticky", top: 24, alignSelf: "start" }}>
+          <Stack spacing={1.5}>
+
+            {/* PREVIEW CARD */}
+            <Paper elevation={0} sx={{ p: 2.5, borderRadius: "12px", border: `0.5px solid ${T.border}`, bgcolor: T.surface }}>
+              <Stack direction="row" alignItems="center" spacing={1} mb={2} pb={1.5} sx={{ borderBottom: `0.5px solid ${T.border}` }}>
+                <Typography sx={{ fontSize: 14, fontWeight: 500, color: T.text }}>Aperçu</Typography>
+              </Stack>
+              <Stack spacing={1.5}>
+                {[
+                  ["Exploitant", form.beneficiary_name],
+                  ["CIN", form.national_id],
+                  ["Culture", form.crop],
+                  ["Superficie", form.area ? `${form.area} ha` : ""],
+                ].map(([lbl, val]) => (
+                  <Box key={lbl} sx={{ bgcolor: T.bg, borderRadius: "8px", p: "10px 12px" }}>
+                    <Typography sx={{ fontSize: 10, color: T.muted, textTransform: "uppercase", letterSpacing: "0.06em", mb: "3px" }}>
+                      {lbl}
+                    </Typography>
+                    <Typography sx={{ fontSize: 13, fontWeight: 500, color: val ? T.text : T.muted, fontStyle: val ? "normal" : "italic" }}>
+                      {val || "—"}
+                    </Typography>
+                  </Box>
+                ))}
+                <Box sx={{ bgcolor: T.bg, borderRadius: "8px", p: "10px 12px" }}>
+                  <Typography sx={{ fontSize: 10, color: T.muted, textTransform: "uppercase", letterSpacing: "0.06em", mb: "5px" }}>
+                    Phase
+                  </Typography>
+                  <Chip
+                    size="small"
+                    label={form.phase || "—"}
+                    sx={{
+                      bgcolor: form.phase ? alpha(T.green, 0.1) : T.border,
+                      color: form.phase ? T.green : T.muted,
+                      fontWeight: 500, fontSize: 11,
+                      border: `0.5px solid ${form.phase ? T.greenBd : T.border}`,
+                      height: 24,
+                    }}
+                  />
+                </Box>
+              </Stack>
+            </Paper>
+
+            {/* SUBMIT */}
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={loading}
+              startIcon={loading ? <CircularProgress size={16} color="inherit" /> : <Save sx={{ fontSize: 16 }} />}
+              sx={{
+                height: 44, borderRadius: "8px",
+                textTransform: "none", fontWeight: 500, fontSize: 14,
+                bgcolor: T.green, boxShadow: "none",
+                "&:hover": { bgcolor: T.greenDk, boxShadow: "none" },
+              }}
+            >
+              {loading ? "Création en cours..." : "Créer le dossier"}
+            </Button>
+
+            {/* ERROR BANNER */}
+            {hasErrors && (
+              <Box sx={{ p: "10px 14px", borderRadius: "8px", border: `0.5px solid ${alpha(T.error, 0.35)}`, bgcolor: T.errorBg, display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography sx={{ fontSize: 12, color: T.error }}>Veuillez corriger les erreurs avant de continuer.</Typography>
+              </Box>
+            )}
+
+            {/* SUCCESS BANNER */}
+            {completion === 100 && !hasErrors && (
+              <Box sx={{ p: "10px 14px", borderRadius: "8px", border: `0.5px solid ${T.greenBd}`, bgcolor: T.greenLt, display: "flex", alignItems: "center", gap: 1 }}>
+                <CheckCircle sx={{ color: T.green, fontSize: 15 }} />
+                <Typography sx={{ fontSize: 12, color: T.green, fontWeight: 500 }}>Formulaire complet.</Typography>
+              </Box>
+            )}
+
+          </Stack>
+        </Box>
+
+      </Box>
     </Box>
-  );
+
+    {/* SNACKBAR */}
+    <Snackbar
+      open={snack.open}
+      autoHideDuration={4000}
+      onClose={() => setSnack(p => ({ ...p, open: false }))}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+    >
+      <Alert
+        severity={snack.severity}
+        variant="filled"
+        onClose={() => setSnack(p => ({ ...p, open: false }))}
+        sx={{ borderRadius: "8px", fontSize: 13 }}
+      >
+        {snack.message}
+      </Alert>
+    </Snackbar>
+
+  </Box>
+);
+
 }

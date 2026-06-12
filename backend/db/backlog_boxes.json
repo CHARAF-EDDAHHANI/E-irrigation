@@ -6,7 +6,7 @@
     "company_id": "+212519190990",
     "messages": [
       {
-        "content": "yes",
+        "content": "salut, votre dossier est valide",
         "sender_id": "e6ea5349-1a63-49db-ad57-ca35e0384c85",
         "sender_type": "admin",
         "created_at": "2026-06-06T23:16:19.222134+00:00"
@@ -30,19 +30,19 @@
         "created_at": "2026-06-07T17:42:53.765523+00:00"
       },
       {
-        "content": "hi",
+        "content": "bonjour",
         "sender_id": "e6ea5349-1a63-49db-ad57-ca35e0384c85",
         "sender_type": "admin",
         "created_at": "2026-06-07T18:02:22.779116+00:00"
       },
       {
-        "content": "good",
+        "content": "salut",
         "sender_id": "e6ea5349-1a63-49db-ad57-ca35e0384c85",
         "sender_type": "admin",
         "created_at": "2026-06-07T22:03:51.706080+00:00"
       },
       {
-        "content": "greaaaaaaaaaaaaaaaaaaaaaaaaat",
+        "content": "l'application est refuse",
         "sender_id": "e6ea5349-1a63-49db-ad57-ca35e0384c85",
         "sender_type": "admin",
         "created_at": "2026-06-07T22:04:07.936725+00:00"
@@ -58,13 +58,13 @@
     "company_id": "+212519190990",
     "messages": [
       {
-        "content": "bonsoir",
+        "content": "bonjour",
         "sender_id": "e6ea5349-1a63-49db-ad57-ca35e0384c85",
         "sender_type": "admin",
         "created_at": "2026-06-07T22:04:47.243440+00:00"
       },
       {
-        "content": "bonsoir",
+        "content": "bonjour",
         "sender_id": "e6ea5349-1a63-49db-ad57-ca35e0384c85",
         "sender_type": "admin",
         "created_at": "2026-06-07T22:05:01.395606+00:00"
@@ -86,7 +86,7 @@
         "created_at": "2026-06-07T22:05:33.175931+00:00"
       },
       {
-        "content": "tres bien",
+        "content": "tres est valide",
         "sender_id": "e6ea5349-1a63-49db-ad57-ca35e0384c85",
         "sender_type": "admin",
         "created_at": "2026-06-07T22:05:51.506162+00:00"
@@ -94,5 +94,14 @@
     ],
     "created_at": "2026-06-07T22:05:24.690924+00:00",
     "updated_at": "2026-06-07T22:05:51.506169+00:00"
+  },
+  {
+    "backlogbox_id": "b50ef121-bf60-486a-8199-07e8206e8003",
+    "folder_id": "283ae806-3359-496f-a2aa-39c9d5699d50",
+    "agent_id": "47cee34f-9af3-4697-8a9c-2034fe18225d",
+    "company_id": "+212519190990",
+    "messages": [],
+    "created_at": "2026-06-12T08:18:40.716313+00:00",
+    "updated_at": "2026-06-12T08:18:40.716313+00:00"
   }
 ]

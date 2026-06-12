@@ -16,6 +16,7 @@ from engine.storage_folder import (
     delete_folder,
     folder_exists,
 )
+from engine.storage_user import get_user_by_id
 from utils.auth import require_auth, get_current_user_object
 
 
@@ -64,11 +65,9 @@ def _parse_financials(data: dict, existing: Folder = None) -> dict:
 def _folder_response(folder: Folder) -> dict:
     d = folder.to_dict()
 
-    # IMPORTANT: match storage_folder.py field name
-    d["created_by_user_fullname"] = getattr(
-        folder,
-        "created_by_user_fullname",
-        "Inconnu"
+    user = get_user_by_id(folder.created_by)
+    d["created_by_user_fullname"] = (
+        user.fullName if user else "Inconnu"
     )
 
     return d

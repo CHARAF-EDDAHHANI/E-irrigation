@@ -3,7 +3,7 @@ import {
   Container, 
   Box, 
   Typography, 
-  TextField, 
+  TextField,
   Button, 
   Alert, 
   CssBaseline,
@@ -13,8 +13,12 @@ import {
   Card,
   CardContent,
   Avatar,
+  FormControl,
+  InputLabel,
+  Select,
   CircularProgress
 } from '@mui/material';
+import ShieldIcon from '@mui/icons-material/Shield'
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import GroupIcon from '@mui/icons-material/Group';
@@ -141,265 +145,314 @@ export default function CompteManager() {
   const showNationalIdField = formData.role === 'farmer';
 
 
-    return (
-    <Box sx={{ bgcolor: '#f4f6f8', minHeight: '100vh', py: 4 }}>
-      <Container maxWidth="lg">
-        <CssBaseline />
-        
-        {/* TOP BAR / NAVIGATION PANEL */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-          <Box>
-            <Typography variant="h4" sx={{ fontWeight: 800, color: '#1a2035', letterSpacing: '-0.5px' }}>
-              Portail d'Administration
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Gestion de la sécurité des utilisateurs et des rôles applicatifs
-            </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            color="error"
-            startIcon={<LogoutIcon />}
-            onClick={handleLogout}
-            sx={{ 
-              textTransform: 'none', 
-              fontWeight: 'bold', 
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(211, 47, 47, 0.2)' 
-            }}
-          >
-            Déconnexion
-          </Button>
+   return (
+  <Box sx={{ bgcolor: 'var(--color-background-tertiary)', minHeight: '100vh', py: 4, px: 3 }}>
+    <Container maxWidth="lg">
+      <CssBaseline />
+
+      {/* TOP BAR */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+        <Box>
+          <Typography variant="h4" sx={{ fontWeight: 500, color: 'text.primary', letterSpacing: '-0.3px', fontSize: '22px' }}>
+            Portail d'administration
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: '2px', fontSize: '13px' }}>
+            Gestion de la sécurité des utilisateurs et des rôles applicatifs
+          </Typography>
         </Box>
 
-        <Grid container spacing={4}>
-          {/* LEFT SIDE: OVERVIEW & STATS */}
-          <Grid item xs={12} md={5}>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#2c3e50', mb: 2 }}>
-              Vue d'ensemble des accès
-            </Typography>
-            
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Card sx={{ borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                  <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Avatar sx={{ bgcolor: '#e3f2fd', color: '#1e88e5', width: 48, height: 48 }}>
-                      <GroupIcon />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="body2" color="textSecondary">Rôles Disponibles</Typography>
-                      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>4 Catégories</Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<LogoutIcon />}
+          onClick={handleLogout}
+          sx={{ textTransform: 'none', fontWeight: 500, borderRadius: '8px', fontSize: '13px', borderWidth: '0.5px' }}
+        >
+          Déconnexion
+        </Button>
+      </Box>
 
-              <Grid item xs={12} sm={6}>
-                <Card sx={{ borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                  <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Avatar sx={{ bgcolor: '#e8f5e9', color: '#43a047', width: 40, height: 40 }}>
-                      <AssignmentIndIcon />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="textSecondary">Opérationnel</Typography>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>Agents</Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+      <Grid container spacing={3}>
 
-              <Grid item xs={12} sm={6}>
-                <Card sx={{ borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                  <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                    <Avatar sx={{ bgcolor: '#fff8e1', color: '#ffb300', width: 40, height: 40 }}>
-                      <BusinessIcon />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="textSecondary">Partenaires</Typography>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>Entreprises</Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+        {/* LEFT PANEL */}
+        <Grid item xs={12} md={4}>
+          <Typography sx={{ fontSize: '11px', fontWeight: 500, color: 'text.secondary', letterSpacing: '0.8px', textTransform: 'uppercase', mb: 1.5 }}>
+            Vue d'ensemble des accès
+          </Typography>
 
-              <Grid item xs={12}>
-                <Card sx={{ borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-                  <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Avatar sx={{ bgcolor: '#e1f5fe', color: '#0288d1', width: 40, height: 40 }}>
-                      <AgricultureIcon />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="caption" color="textSecondary">Exploitation</Typography>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>Agriculteurs</Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+          <Grid container spacing={1.5}>
+            <Grid item xs={12}>
+              <Card elevation={0} sx={{ borderRadius: 2, border: '0.5px solid', borderColor: 'divider' }}>
+                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: '14px !important' }}>
+                  <Avatar sx={{ bgcolor: '#E6F1FB', color: '#185FA5', borderRadius: '8px', width: 38, height: 38 }}>
+                    <ShieldIcon sx={{ fontSize: 18 }} />
+                  </Avatar>
+                  <Box>
+                    <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>Rôles disponibles</Typography>
+                    <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>4 catégories</Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Card elevation={0} sx={{ borderRadius: 2, border: '0.5px solid', borderColor: 'divider' }}>
+                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: '14px !important' }}>
+                  <Avatar sx={{ bgcolor: '#EAF3DE', color: '#3B6D11', borderRadius: '8px', width: 38, height: 38 }}>
+                    <AssignmentIndIcon sx={{ fontSize: 18 }} />
+                  </Avatar>
+                  <Box>
+                    <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>Opérationnel</Typography>
+                    <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>Agents</Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Card elevation={0} sx={{ borderRadius: 2, border: '0.5px solid', borderColor: 'divider' }}>
+                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: '14px !important' }}>
+                  <Avatar sx={{ bgcolor: '#FAEEDA', color: '#854F0B', borderRadius: '8px', width: 38, height: 38 }}>
+                    <BusinessIcon sx={{ fontSize: 18 }} />
+                  </Avatar>
+                  <Box>
+                    <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>Partenaires</Typography>
+                    <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>Entreprises</Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Card elevation={0} sx={{ borderRadius: 2, border: '0.5px solid', borderColor: 'divider' }}>
+                <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 1.5, py: '14px !important' }}>
+                  <Avatar sx={{ bgcolor: '#E1F5EE', color: '#0F6E56', borderRadius: '8px', width: 38, height: 38 }}>
+                    <AgricultureIcon sx={{ fontSize: 18 }} />
+                  </Avatar>
+                  <Box>
+                    <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>Exploitation</Typography>
+                    <Typography sx={{ fontSize: '14px', fontWeight: 500 }}>Agriculteurs</Typography>
+                  </Box>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
+        </Grid>
 
-          {/* RIGHT SIDE: MODERN FORM CONTAINER */}
-          <Grid item xs={12} md={7}>
-            <Paper 
-              elevation={0} 
-              sx={{ 
-                p: 4, 
-                borderRadius: '16px', 
-                border: '1px solid #eef2f6',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.03)'
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
-                <PersonAddIcon color="primary" />
-                <Typography variant="h5" sx={{ fontWeight: 700, color: '#1e293b' }}>
-                  Inscrire un bénéficiaire
-                </Typography>
-              </Box>
+        {/* RIGHT FORM */}
+        <Grid item xs={12} md={8}>
+          <Paper elevation={0} sx={{ p: 3.5, borderRadius: 3, border: '0.5px solid', borderColor: 'divider' }}>
 
-              {error && <Alert severity="error" sx={{ borderRadius: '8px', mb: 3 }}>{error}</Alert>}
-              {success && <Alert severity="success" sx={{ borderRadius: '8px', mb: 3 }}>{success}</Alert>}
+            {/* FORM HEADER */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 2.5, pb: 2, borderBottom: '0.5px solid', borderColor: 'divider' }}>
+              <PersonAddIcon color="info" sx={{ fontSize: 20 }} />
+              <Typography variant="h6" sx={{ fontWeight: 500, fontSize: '18px' }}>
+                Inscrire un bénéficiaire
+              </Typography>
+            </Box>
 
-              <Box component="form" onSubmit={handleSubmit} noValidate>
-                <Grid container spacing={2}>
-                  
-                  {/* SELECTEUR DE RÔLE */}
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      select
-                      id="role"
-                      label="Rôle du bénéficiaire"
-                      name="role"
-                      value={formData.role}
-                      onChange={handleChange}
-                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                    >
-                      <MenuItem value="agent">Agent</MenuItem>
-                      <MenuItem value="company">Entreprise (Société)</MenuItem>
-                      <MenuItem value="farmer">Agriculteur</MenuItem>
-                      <MenuItem value="admin">Administrateur</MenuItem>
-                    </TextField>
-                  </Grid>
+            {error && <Alert severity="error" sx={{ mb: 2, borderRadius: 2, fontSize: '13px' }}>{error}</Alert>}
+            {success && <Alert severity="success" sx={{ mb: 2, borderRadius: 2, fontSize: '13px' }}>{success}</Alert>}
 
-                  {/* NOM COMPLET */}
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="fullName"
-                      label="Pseudo / Nom Complet"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                    />
-                  </Grid>
+            {!error && !success && (
+              <Alert severity="info" sx={{ mb: 2, borderRadius: 2, fontSize: '13px' }}>
+                Sélectionnez un rôle pour personnaliser le formulaire.
+              </Alert>
+            )}
 
-                  {/* EMAIL */}
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="email"
-                      label="Adresse Email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                    />
-                  </Grid>
+            <Box component="form" onSubmit={handleSubmit}>
 
-                  {/* 📞 TELEPHONE DYNAMIQUE */}
-                  {showPhoneField && (
-                    <Grid item xs={12} sm={showNationalIdField ? 6 : 12}>
-                      <TextField
-                        required
-                        fullWidth
-                        id="phone"
-                        label="Numéro de Téléphone"
-                        name="phone"
-                        placeholder="+2126..."
-                        value={formData.phone}
-                        onChange={handleChange}
-                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                      />
-                    </Grid>
-                  )}
+              {/* ROLE LABEL */}
+              <Typography sx={{ fontSize: '12px', fontWeight: 500, color: 'text.secondary', letterSpacing: '0.3px', textTransform: 'uppercase', mb: 1 }}>
+                Rôle du bénéficiaire
+              </Typography>
 
-                  {/* 🪪 ID NATIONAL DYNAMIQUE */}
-                  {showNationalIdField && (
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        id="national_id"
-                        label="ID National (CIN)"
-                        name="national_id"
-                        placeholder="Ex: GH12233"
-                        value={formData.national_id}
-                        onChange={handleChange}
-                        sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                      />
-                    </Grid>
-                  )}
-
-                  {/* MOT DE PASSE */}
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="password"
-                      label="Mot de passe"
-                      name="password"
-                      type="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                    />
-                  </Grid>
-
-                  {/* CONFIRMATION MOT DE PASSE */}
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="confirmPassword"
-                      label="Confirmer mot de passe"
-                      name="confirmPassword"
-                      type="password"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: '8px' } }}
-                    />
-                  </Grid>
-
-                  {/* BOUTON DE SOUMISSION */}
-                  <Grid item xs={12} sx={{ mt: 2 }}>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      disabled={loading}
+              {/* ROLE PILLS */}
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                {[
+                  { value: 'agent', label: 'Agent', icon: <AssignmentIndIcon sx={{ fontSize: 15 }} />, activeColor: { bg: '#E6F1FB', border: '#378ADD', color: '#0C447C' } },
+                  { value: 'company', label: 'Entreprise', icon: <BusinessIcon sx={{ fontSize: 15 }} />, activeColor: { bg: '#FAEEDA', border: '#BA7517', color: '#633806' } },
+                  { value: 'farmer', label: 'Agriculteur', icon: <AgricultureIcon sx={{ fontSize: 15 }} />, activeColor: { bg: '#EAF3DE', border: '#3B6D11', color: '#27500A' } },
+                  { value: 'admin', label: 'Administrateur', icon: <ShieldIcon sx={{ fontSize: 15 }} />, activeColor: { bg: '#FBEAF0', border: '#D4537E', color: '#72243E' } },
+                ].map(({ value, label, icon, activeColor }) => {
+                  const isActive = formData.role === value;
+                  return (
+                    <Box
+                      key={value}
+                      onClick={() => setFormData(prev => ({ ...prev, role: value }))}
                       sx={{
-                        py: 1.5,
-                        borderRadius: '8px',
-                        fontWeight: 'bold',
-                        textTransform: 'none',
-                        fontSize: '16px',
-                        boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)'
+                        display: 'flex', alignItems: 'center', gap: 0.75,
+                        px: 1.75, py: 0.875,
+                        borderRadius: '999px',
+                        border: '0.5px solid',
+                        cursor: 'pointer',
+                        fontSize: '13px',
+                        fontWeight: isActive ? 500 : 400,
+                        transition: 'all 0.15s',
+                        bgcolor: isActive ? activeColor.bg : 'background.default',
+                        borderColor: isActive ? activeColor.border : 'divider',
+                        color: isActive ? activeColor.color : 'text.secondary',
+                        '&:hover': { borderColor: 'text.primary' }
                       }}
                     >
-                      {loading ? <CircularProgress size={24} color="inherit" /> : "Créer le compte"}
-                    </Button>
-                  </Grid>
-
-                </Grid>
+                      {icon} {label}
+                    </Box>
+                  );
+                })}
               </Box>
-            </Paper>
-          </Grid>
+
+              <Grid container spacing={1.5}>
+
+                {/* NAME */}
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: 'text.secondary', letterSpacing: '0.3px', textTransform: 'uppercase', mb: 0.75 }}>
+                    Pseudo / Nom complet
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    placeholder="Ex: Jean Dupont"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '14px', bgcolor: 'action.hover' },
+                      '& .MuiOutlinedInput-notchedOutline': { borderWidth: '0.5px' }
+                    }}
+                  />
+                </Grid>
+
+                {/* EMAIL */}
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: 'text.secondary', letterSpacing: '0.3px', textTransform: 'uppercase', mb: 0.75 }}>
+                    Email
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    placeholder="jean@exemple.com"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '14px', bgcolor: 'action.hover' },
+                      '& .MuiOutlinedInput-notchedOutline': { borderWidth: '0.5px' }
+                    }}
+                  />
+                </Grid>
+
+                {/* PHONE */}
+                {showPhoneField && (
+                  <Grid item xs={12} sm={6}>
+                    <Typography sx={{ fontSize: '12px', fontWeight: 500, color: 'text.secondary', letterSpacing: '0.3px', textTransform: 'uppercase', mb: 0.75 }}>
+                      Téléphone
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      placeholder="+212 600 000 000"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      variant="outlined"
+                      sx={{
+                        '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '14px', bgcolor: 'action.hover' },
+                        '& .MuiOutlinedInput-notchedOutline': { borderWidth: '0.5px' }
+                      }}
+                    />
+                  </Grid>
+                )}
+
+                {/* CIN */}
+                {showNationalIdField && (
+                  <Grid item xs={12} sm={6}>
+                    <Typography sx={{ fontSize: '12px', fontWeight: 500, color: 'text.secondary', letterSpacing: '0.3px', textTransform: 'uppercase', mb: 0.75 }}>
+                      CIN
+                    </Typography>
+                    <TextField
+                      fullWidth
+                      placeholder="AB123456"
+                      name="national_id"
+                      value={formData.national_id}
+                      onChange={handleChange}
+                      variant="outlined"
+                      sx={{
+                        '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '14px', bgcolor: 'action.hover' },
+                        '& .MuiOutlinedInput-notchedOutline': { borderWidth: '0.5px' }
+                      }}
+                    />
+                  </Grid>
+                )}
+
+                {/* PASSWORD */}
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: 'text.secondary', letterSpacing: '0.3px', textTransform: 'uppercase', mb: 0.75 }}>
+                    Mot de passe
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    type="password"
+                    placeholder="••••••••"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '14px', bgcolor: 'action.hover' },
+                      '& .MuiOutlinedInput-notchedOutline': { borderWidth: '0.5px' }
+                    }}
+                  />
+                </Grid>
+
+                {/* CONFIRM PASSWORD */}
+                <Grid item xs={12} sm={6}>
+                  <Typography sx={{ fontSize: '12px', fontWeight: 500, color: 'text.secondary', letterSpacing: '0.3px', textTransform: 'uppercase', mb: 0.75 }}>
+                    Confirmer mot de passe
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    type="password"
+                    placeholder="••••••••"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '14px', bgcolor: 'action.hover' },
+                      '& .MuiOutlinedInput-notchedOutline': { borderWidth: '0.5px' }
+                    }}
+                  />
+                </Grid>
+
+                {/* SUBMIT */}
+                <Grid item xs={12}>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    disabled={loading}
+                    startIcon={!loading && <PersonAddIcon />}
+                    sx={{
+                      py: 1.25, mt: 0.5,
+                      borderRadius: 2,
+                      fontWeight: 500,
+                      textTransform: 'none',
+                      fontSize: '14px',
+                      boxShadow: 'none',
+                      '&:hover': { boxShadow: 'none' }
+                    }}
+                  >
+                    {loading ? <CircularProgress size={20} /> : 'Créer le compte'}
+                  </Button>
+                </Grid>
+
+              </Grid>
+            </Box>
+          </Paper>
         </Grid>
-      </Container>
-    </Box>
-  );
+
+      </Grid>
+    </Container>
+  </Box>
+);
 }

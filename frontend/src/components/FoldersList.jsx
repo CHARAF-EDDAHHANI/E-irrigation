@@ -30,24 +30,31 @@ const PHASE = {
 
 const getPhase = (p) => PHASE[p?.toLowerCase()] || { bg: "#f1f5f9", color: "#64748b", label: p || "—" };
 
-export default function FoldersList({ onSelectFolder }) {
+export default function FoldersList({ onSelectFolder, onFoldersLoaded }) {
   const [folders, setFolders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error,   setError]   = useState(null);
   const [search,  setSearch]  = useState("");
 
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetchAllFolders();
-        setFolders(data || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  (async () => {
+    try {
+      const data = await fetchAllFolders();
+      const cleanData = data || [];
+      setFolders(cleanData);
+      
+      if (onFoldersLoaded) {
+        onFoldersLoaded(cleanData);
       }
-    })();
-  }, []);
+      
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  })();
+}, [onFoldersLoaded]);
+
 
   const filtered = folders.filter(f =>
     !search ||
@@ -139,104 +146,100 @@ export default function FoldersList({ onSelectFolder }) {
       )}
 
       {/* GRID */}
-      <Grid container spacing={2.5}>
-        {filtered.map(fold => {
-          const phase = getPhase(fold.phase);
-          return (
-            <Grid item xs={12} sm={6} lg={4} key={fold.folder_id}>
-              <Card
-                onClick={() => onSelectFolder(fold.folder_id)}
-                elevation={0}
-                sx={{
-                  p: 0,
-                  borderRadius: "16px",
-                  border: `1px solid ${T.border}`,
-                  cursor: "pointer",
-                  bgcolor: T.surface,
-                  overflow: "hidden",
-                  transition: "all 0.18s ease",
-                  "&:hover": {
-                    transform: "translateY(-3px)",
-                    boxShadow: "0 12px 32px rgba(0,0,0,0.09)",
-                    borderColor: alpha(T.green, 0.35),
-                  },
-                }}
-              >
-                {/* TOP COLOR BAR */}
-                <Box sx={{ height: 3, bgcolor: phase.color, opacity: 0.7 }} />
+      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" }}>
+  {filtered.map(fold => {
+    const phase = getPhase(fold.phase);
+    return (
+      <Card
+        key={fold.folder_id}
+        onClick={() => onSelectFolder(fold.folder_id)}
+        elevation={0}
+        sx={{
+          p: 0,
+          borderRadius: "16px",
+          border: `1px solid ${T.border}`,
+          cursor: "pointer",
+          bgcolor: T.surface,
+          overflow: "hidden",
+          transition: "all 0.18s ease",
+          "&:hover": {
+            transform: "translateY(-3px)",
+            boxShadow: "0 12px 32px rgba(0,0,0,0.09)",
+            borderColor: alpha(T.green, 0.35),
+          },
+        }}
+      >
+        {/* TOP COLOR BAR */}
+        <Box sx={{ height: 3, bgcolor: phase.color, opacity: 0.7 }} />
 
-                <Box sx={{ p: 2.5 }}>
-                  {/* HEADER ROW */}
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1.5 }}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, minWidth: 0 }}>
-                      <Box sx={{
-                        width: 32, height: 32, borderRadius: "9px", flexShrink: 0,
-                        bgcolor: alpha(T.green, 0.1),
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <FolderOutlined sx={{ fontSize: 16, color: T.green }} />
-                      </Box>
-                      <Typography sx={{
-                        fontSize: 13, fontWeight: 700, color: T.text,
-                        overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                      }}>
-                        {fold.folder_name}
-                      </Typography>
-                    </Box>
-                    <Chip
-                      label={phase.label}
-                      size="small"
-                      sx={{
-                        ml: 1, flexShrink: 0,
-                        bgcolor: phase.bg, color: phase.color,
-                        fontWeight: 700, fontSize: 10,
-                        border: `1px solid ${alpha(phase.color, 0.2)}`,
-                        height: 22,
-                      }}
-                    />
-                  </Box>
+        <Box sx={{ p: 2.5 }}>
+          {/* HEADER ROW */}
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1.5 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, flex: 1, minWidth: 0 }}>
+              <Box sx={{
+                width: 32, height: 32, borderRadius: "9px", flexShrink: 0,
+                bgcolor: alpha(T.green, 0.1),
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <FolderOutlined sx={{ fontSize: 16, color: T.green }} />
+              </Box>
+              <Typography sx={{
+                fontSize: 13, fontWeight: 700, color: T.text,
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              }}>
+                {fold.folder_name}
+              </Typography>
+            </Box>
+            <Chip
+              label={phase.label}
+              size="small"
+              sx={{
+                ml: 1, flexShrink: 0,
+                bgcolor: phase.bg, color: phase.color,
+                fontWeight: 700, fontSize: 10,
+                border: `1px solid ${alpha(phase.color, 0.2)}`,
+                height: 22,
+              }}
+            />
+          </Box>
 
-                  {/* BENEFICIARY */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1 }}>
-                    <PersonOutlined sx={{ fontSize: 14, color: T.muted }} />
-                    <Typography sx={{ fontSize: 13, fontWeight: 600, color: T.sub }}>
-                      {fold.beneficiary_name}
-                    </Typography>
-                  </Box>
+          {/* BENEFICIARY */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 1 }}>
+            <PersonOutlined sx={{ fontSize: 14, color: T.muted }} />
+            <Typography sx={{ fontSize: 13, fontWeight: 600, color: T.sub }}>
+              {fold.beneficiary_name}
+            </Typography>
+          </Box>
 
-                  {/* META */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 2 }}>
-                    <AgricultureOutlined sx={{ fontSize: 14, color: T.muted }} />
-                    <Typography sx={{ fontSize: 12, color: T.muted }}>
-                      {fold.area ? `${fold.area} ha` : "—"}
-                      {fold.crop ? ` · ${fold.crop}` : ""}
-                    </Typography>
-                  </Box>
+          {/* META */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, mb: 2 }}>
+            <AgricultureOutlined sx={{ fontSize: 14, color: T.muted }} />
+            <Typography sx={{ fontSize: 12, color: T.muted }}>
+              {fold.area ? `${fold.area} ha` : "—"}
+              {fold.crop ? ` · ${fold.crop}` : ""}
+            </Typography>
+          </Box>
 
-                  {/* DIVIDER */}
-                  <Box sx={{ height: "1px", bgcolor: T.border, mx: -2.5, mb: 1.5 }} />
+          {/* DIVIDER */}
+          <Box sx={{ height: "1px", bgcolor: T.border, mx: -2.5, mb: 1.5 }} />
 
-                  {/* FOOTER */}
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <Typography sx={{ fontSize: 11.5, color: T.muted, fontWeight: 500 }}>
-                      {fold.created_by_name || fold.created_by_user_fullname || "—"}
-                    </Typography>
-                    <Box sx={{
-                      display: "flex", alignItems: "center", gap: 0.25,
-                      color: T.green, fontSize: 12, fontWeight: 600,
-                    }}>
-                      <Typography sx={{ fontSize: 11.5, fontWeight: 600, color: T.green }}>
-                        Ouvrir
-                      </Typography>
-                      <ChevronRight sx={{ fontSize: 15, color: T.green }} />
-                    </Box>
-                  </Box>
-                </Box>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
+          {/* FOOTER */}
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <Typography sx={{ fontSize: 11.5, color: T.muted, fontWeight: 500 }}>
+              {fold.created_by_name || fold.created_by_user_fullname || "—"}
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.25 }}>
+              <Typography sx={{ fontSize: 11.5, fontWeight: 600, color: T.green }}>
+                Ouvrir
+              </Typography>
+              <ChevronRight sx={{ fontSize: 15, color: T.green }} />
+            </Box>
+          </Box>
+        </Box>
+      </Card>
+    );
+  })}
+</Box>
     </Box>
   );
 }

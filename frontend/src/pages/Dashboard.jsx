@@ -21,6 +21,9 @@ export default function Dashboard() {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [conceptionData, setConceptionData] = useState(null);
   const [activeFolderId, setActiveFolderId] = useState(null);
+  
+  // ── ÉTAPE A : Stocker les dossiers au niveau global du Dashboard ──────────
+  const [folders, setFolders] = useState([]);
 
   // ── Open folder detail ────────────────────────────────────────────────────
   const handleSelectFolder = async (folder_id) => {
@@ -67,11 +70,12 @@ export default function Dashboard() {
 
         <Box sx={{ flex: 1, overflowY: "auto" }}>
 
-          {/* DASHBOARD — folders list + detail */}
+          {/* DASHBOARD — folders list */}
           {currentPage === "dashboard" && (
             <>
               {viewMode === "list" && (
-                <FoldersList onSelectFolder={handleSelectFolder} />
+                <FoldersList onSelectFolder={handleSelectFolder} onFoldersLoaded={setFolders} />
+
               )}
               {viewMode === "detail" && (
                 <FolderDetail
@@ -88,9 +92,8 @@ export default function Dashboard() {
           {currentPage === "comptes" && <CompteManager />}
 
           {currentPage === "folders" && (
-            <FoldersList onSelectFolder={handleSelectFolder} />
+            <FoldersList onSelectFolder={handleSelectFolder} onFoldersLoaded={setFolders} />
           )}
-
 
           {currentPage === "create-folder" && <CreateFolder />}
 
@@ -110,10 +113,14 @@ export default function Dashboard() {
               setCurrentPage={setCurrentPage}
             />
           )}
+          
           {/*  backlogs */}
-          {currentPage === "messagerie" && <Allbacklogboxs />}
+          {currentPage === "messagerie" && (
+            /* ÉTAPE C : On passe enfin la liste des dossiers à votre messagerie */
+            <Allbacklogboxs folders={folders} />
+          )}
 
-          {/*  backlogs */}
+          {/*  processus */}
           {currentPage === "processus" && <Processus />}
         </Box>
       </Box>

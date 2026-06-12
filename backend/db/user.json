@@ -2,7 +2,7 @@
   {
     "user_id": "e6ea5349-1a63-49db-ad57-ca35e0384c85",
     "email": "admin@system.com",
-    "fullName": "Administrateur",
+    "fullName": "Admin-loubna jaafari",
     "role": "admin",
     "created_at": "2026-05-06T19:01:52.074720+00:00",
     "updated_at": "2026-05-06T19:01:52.074720+00:00",
@@ -11,115 +11,10 @@
   {
     "user_id": "47cee34f-9af3-4697-8a9c-2034fe18225d",
     "email": "ana@gmail.com",
-    "fullName": "loubna jaafari",
+    "fullName": "khadija Etaleb",
     "role": "agent",
     "created_at": "2026-05-17T10:42:46.197864+00:00",
     "updated_at": "2026-05-17T10:42:46.197864+00:00",
     "password": "$2b$05$1a9qMYywNiPg/B7XFjxceOlLLUPEdDyrcmUbV7l4c4cSVU8DfUBga"
-  },
-  {
-    "user_id": "637e1a41-5fc8-41f5-82df-6cf7a4cf04f4",
-    "email": "agr@gmail.com",
-    "fullName": "agr",
-    "role": "farmer",
-    "created_at": "2026-05-17T10:43:55.633923+00:00",
-    "updated_at": "2026-05-17T10:43:55.633923+00:00",
-    "password": "$2b$05$tI9fUHpvNNMnfJIIA5DIR.brPWezX3DaQ6p2F8WossR.hiE1YV2O6"
-  },
-  {
-    "user_id": "c713f0f4-8329-4b3c-ae5c-37ba6f363472",
-    "email": "soc@gamil.com",
-    "fullName": "soc",
-    "role": "company",
-    "created_at": "2026-05-17T10:44:24.278008+00:00",
-    "updated_at": "2026-05-17T10:44:24.278008+00:00",
-    "password": "$2b$05$mYXcO.ZfV27ZaA1haXEojeZTcOOfROnVbf/SIAjOfbWAvSo9dQ0fq"
-  },
-  {
-    "user_id": "59c2e582-6c14-45ed-894f-b3ea6c223f58",
-    "email": "agri1@gmail.com",
-    "fullName": "agei1",
-    "role": "farmer",
-    "created_at": "2026-05-17T11:14:19.965198+00:00",
-    "updated_at": "2026-05-17T11:14:19.965198+00:00",
-    "password": "$2b$05$AJmb50gSyI8cxpu3FSsMDepvrnNX6ZcdsYPHYE/Nf8YFY/2THIdEm"
-  },
-  {
-    "user_id": "63115047-9270-4b32-bfd9-c2df638e8f39",
-    "email": "g@gmail.com",
-    "fullName": "ghh",
-    "role": "farmer",
-    "created_at": "2026-05-17T11:36:33.913067+00:00",
-    "updated_at": "2026-05-17T11:36:33.913067+00:00",
-    "password": "$2b$05$wtaiunB81cHp/S3G2xzt4e9yUjPIhaZpvvuZO.KtuPSYOhK3yq9kW"
-  },
-  {
-    "user_id": "e67002da-14e4-4100-b01f-d740fd842a23",
-    "email": "jik@gmail.com",
-    "fullName": "jik",
-    "role": "farmer",
-    "created_at": "2026-05-17T16:28:31.880184+00:00",
-    "updated_at": "2026-05-17T16:28:31.880184+00:00",
-    "password": "$2b$05$iQSUBnUmjStIZEdt9C/31.V9cOfn1crX0pQtSh3EVVpKfKFatWpym"
-  },
-  {
-    "user_id": "+212519190990",
-    "email": "societe@gmail.com",
-    "fullName": "AGRINORD",
-    "role": "company",
-    "phone": "+212519190990",
-    "created_at": "2026-05-17T10:42:46.197864+00:00",
-    "updated_at": "2026-05-17T10:42:46.197864+00:00",
-    "password": "$2b$05$1a9qMYywNiPg/B7XFjxceOlLLUPEdDyrcmUbV7l4c4cSVU8DfUBga"
-  },
-  {
-    "user_id": "+212519190990",
-    "email": "societe@gmail.com",
-    "fullName": "AGRINORD",
-    "role": "company",
-    "farmer_phone": "+212519190990",
-    "benificiary_phone": "+212519190990",
-    "created_at": "2026-05-17T10:42:46.197864+00:00",
-    "updated_at": "2026-05-17T10:42:46.197864+00:00",
-    "password": "$2b$05$1a9qMYywNiPg/B7XFjxceOlLLUPEdDyrcmUbV7l4c4cSVU8DfUBga"
-  },
-  {
-    "user_id": "3ebd82ed-d800-4562-bd55-14e7d94f5155",
-    "email": "adminol@system.com",
-    "fullName": "js",
-    "role": "agent",
-    "created_at": "2026-06-04T17:40:29.056196+00:00",
-    "updated_at": "2026-06-04T17:40:29.056196+00:00",
-    "password": "$2b$05$Cfqjw0tGhvWH5ZRI4/FwvOns0Ml1WiA8k0COZNjwZf1mZ2WnC1c6G"
-  },
-  {
-    "user_id": "+212680571827",
-    "email": "adil@gmail.com",
-    "fullName": "helo",
-    "role": "company",
-    "created_at": "2026-06-04T17:41:39.240707+00:00",
-    "updated_at": "2026-06-04T17:41:39.240707+00:00",
-    "phone": "+212680571827",
-    "password": "$2b$05$R.Ku4JxMGT0hZ52uHbCx6eJwyHVwVa/MR2rqtqnqJbpF11q44eJMy"
-  },
-  {
-    "user_id": "e2791b1b-02f5-4319-8ae6-5856e5a07a85",
-    "email": "lila@gmail.com",
-    "fullName": "kamali mohamed",
-    "role": "farmer",
-    "created_at": "2026-06-04T17:42:33.256494+00:00",
-    "updated_at": "2026-06-04T17:42:33.256494+00:00",
-    "phone": "+212680571820",
-    "national_id": "GH876535",
-    "password": "$2b$05$jlF7hyeal09XB31H5gOWFOa8ztTsytLdwntW62mUfS.kG5kJV/EiS"
-  },
-  {
-    "user_id": "201e342d-0d62-4fdb-8018-3e0223a4252f",
-    "email": "liman@gmail.com",
-    "fullName": "nabilo",
-    "role": "admin",
-    "created_at": "2026-06-04T17:43:09.605711+00:00",
-    "updated_at": "2026-06-04T17:43:09.605711+00:00",
-    "password": "$2b$05$rpHz8tH4QfNiaoiVFpfYDe0c79H9R8h6iqTuc/g8NCvdNdde38F9e"
   }
 ]

@@ -3728,10 +3728,1500 @@
     "conception_id": "8dfc316c-452c-47cc-bc84-ac9776113ad4",
     "folder_id": "621e5b0c-6a7b-418a-a4ad-18252b5a2f6c",
     "created_at": "2026-06-10T21:02:29.654214+00:00",
-    "updated_at": "2026-06-10T21:02:29.654214+00:00",
+    "updated_at": "2026-06-10T21:15:52.733980+00:00",
     "input": {
       "dossier_name": "DOS_GH98778_2026",
       "folder_id": "621e5b0c-6a7b-418a-a4ad-18252b5a2f6c",
+      "cultures": [
+        {
+          "name": "AGRUME",
+          "ET0": 6,
+          "Kc": 0.65,
+          "Kr": 0.8
+        }
+      ],
+      "emitters": [
+        {
+          "culture": "AGRUME",
+          "debit_goutteur": 3.47,
+          "ecart_rampe": 6,
+          "ecart_goutteur": 0.75,
+          "nb_rampes": 2,
+          "Pn": 10
+        }
+      ],
+      "emitter_params": {
+        "debit_goutteur": 3.47,
+        "ecart_goutteur": 0.75,
+        "ecart_rampe": 6
+      },
+      "postes": [
+        {
+          "poste_id": 1,
+          "duree_h": 2.25,
+          "units": [
+            {
+              "unit_id": "U1",
+              "culture": "AGRUME",
+              "superficie": 46400
+            }
+          ]
+        }
+      ],
+      "rampe": {
+        "Lr": 66,
+        "Eg": 1.66,
+        "qg": 7.54,
+        "Dr": 13.8,
+        "pente": 0,
+        "Pentree": 10,
+        "Qr": 300
+      },
+      "porte_rampe": {
+        "Lpr": 108,
+        "Edepart": 6,
+        "Qpr": 25230,
+        "pente": 3.1,
+        "Pentree": 0,
+        "Qdepart": 1402,
+        "diameter_mm": 84
+      },
+      "conduites": [
+        {
+          "troncon": "T1",
+          "debit": 51.68,
+          "diam_ext": 200,
+          "diam_int": 117,
+          "longueur": 115
+        }
+      ],
+      "pompe_bassin": {
+        "Q": 38.86,
+        "Pa": 23.2,
+        "PDCmax": 10,
+        "Ha": 2.85,
+        "NPSH": 5.15
+      },
+      "pompe_forage": {
+        "Q": 38.5,
+        "Lfb": 123,
+        "diam_int": 103.7,
+        "delta_z": 1.4,
+        "delta_pfb": 3.2,
+        "Nd": 160,
+        "delta_pc": 5.2,
+        "rendement": 72
+      },
+      "bassin": {
+        "hauteur": 4,
+        "longueur_gueule": 45,
+        "largeur_gueule": 33,
+        "longueur_radier": 37,
+        "largeur_radier": 25,
+        "superficie_nette_ha": 99,
+        "besoins_m3j": 551.29
+      }
+    },
+    "results": {
+      "bassin": {
+        "S_interne_m2": 1549,
+        "S_parois_larg_m2": 264,
+        "S_parois_long_m2": 360,
+        "S_perimetre_m2": 243,
+        "S_radier_m2": 925,
+        "S_totale_m2": 1884.5,
+        "autonomie_j": 8.7,
+        "vol_par_ha_m3": 48.2,
+        "volume_m3": 4776.02
+      },
+      "besoins": [
+        {
+          "B_brute_mm": 4.875,
+          "B_net_mm": 3.9,
+          "ET0": 6,
+          "Kc": 0.65,
+          "Kr": 0.8,
+          "culture": "AGRUME"
+        }
+      ],
+      "conduites": [
+        {
+          "debit_m3h": 51.68,
+          "diam_ext_mm": 200,
+          "diam_int_mm": 117,
+          "longueur_m": 115,
+          "troncon": "T1",
+          "vitesse_ms": 1.335
+        }
+      ],
+      "distributeurs": [
+        {
+          "Pf": 1.17,
+          "Pn": 10,
+          "Sg": 4.5,
+          "culture": "AGRUME",
+          "debit_goutteur": 3.47,
+          "delta_P": 1.67,
+          "ecart_goutteur": 0.75,
+          "ecart_rampe": 6,
+          "nb_rampes": 2,
+          "x": 1.0973
+        }
+      ],
+      "pompe_bassin": {
+        "HMT_mce": 36.05,
+        "Ha_m": 2.85,
+        "NPSH_m": 5.15,
+        "PDCmax_mce": 10,
+        "Pa_mce": 23.2,
+        "Q_m3h": 38.86,
+        "puissance_kw": 5.09,
+        "rendement_pct": 75
+      },
+      "pompe_forage": {
+        "HMT_mce": 169.8,
+        "Lfb_m": 123,
+        "Nd_m": 160,
+        "Q_m3h": 38.5,
+        "delta_pc_mce": 5.2,
+        "delta_pfb_mce": 3.2,
+        "delta_z_m": 1.4,
+        "diam_int_mm": 103.7,
+        "puissance_kw": 24.74,
+        "rendement_pct": 72
+      },
+      "porte_rampe": {
+        "Lpr": 108,
+        "Pmax": 2.629,
+        "Pmin": 0.185,
+        "diameter_mm": 84,
+        "nb_troncons": 18,
+        "troncons": [
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 6,
+            "Peff_mce": 0.1854,
+            "Qtr_lh": 1402,
+            "V_ms": 0.07,
+            "Yls_mce": 0.0006,
+            "n": 1
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 12,
+            "Peff_mce": 0.3692,
+            "Qtr_lh": 2803.65,
+            "V_ms": 0.141,
+            "Yls_mce": 0.0022,
+            "n": 2
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 18,
+            "Peff_mce": 0.5507,
+            "Qtr_lh": 4205.29,
+            "V_ms": 0.211,
+            "Yls_mce": 0.0044,
+            "n": 3
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 24,
+            "Peff_mce": 0.7294,
+            "Qtr_lh": 5606.94,
+            "V_ms": 0.281,
+            "Yls_mce": 0.0073,
+            "n": 4
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 30,
+            "Peff_mce": 0.9046,
+            "Qtr_lh": 7008.59,
+            "V_ms": 0.351,
+            "Yls_mce": 0.0108,
+            "n": 5
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 36,
+            "Peff_mce": 1.0757,
+            "Qtr_lh": 8410.24,
+            "V_ms": 0.422,
+            "Yls_mce": 0.0149,
+            "n": 6
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 42,
+            "Peff_mce": 1.2422,
+            "Qtr_lh": 9811.88,
+            "V_ms": 0.492,
+            "Yls_mce": 0.0195,
+            "n": 7
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 48,
+            "Peff_mce": 1.4035,
+            "Qtr_lh": 11213.53,
+            "V_ms": 0.562,
+            "Yls_mce": 0.0247,
+            "n": 8
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 54,
+            "Peff_mce": 1.5592,
+            "Qtr_lh": 12615.18,
+            "V_ms": 0.632,
+            "Yls_mce": 0.0303,
+            "n": 9
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 60,
+            "Peff_mce": 1.7088,
+            "Qtr_lh": 14016.82,
+            "V_ms": 0.703,
+            "Yls_mce": 0.0364,
+            "n": 10
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 66,
+            "Peff_mce": 1.8517,
+            "Qtr_lh": 15418.47,
+            "V_ms": 0.773,
+            "Yls_mce": 0.043,
+            "n": 11
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 72,
+            "Peff_mce": 1.9876,
+            "Qtr_lh": 16820.12,
+            "V_ms": 0.843,
+            "Yls_mce": 0.0501,
+            "n": 12
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 78,
+            "Peff_mce": 2.1159,
+            "Qtr_lh": 18221.76,
+            "V_ms": 0.913,
+            "Yls_mce": 0.0577,
+            "n": 13
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 84,
+            "Peff_mce": 2.2363,
+            "Qtr_lh": 19623.41,
+            "V_ms": 0.984,
+            "Yls_mce": 0.0656,
+            "n": 14
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 90,
+            "Peff_mce": 2.3482,
+            "Qtr_lh": 21025.06,
+            "V_ms": 1.054,
+            "Yls_mce": 0.0741,
+            "n": 15
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 96,
+            "Peff_mce": 2.4513,
+            "Qtr_lh": 22426.71,
+            "V_ms": 1.124,
+            "Yls_mce": 0.0829,
+            "n": 16
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 102,
+            "Peff_mce": 2.5451,
+            "Qtr_lh": 23828.35,
+            "V_ms": 1.194,
+            "Yls_mce": 0.0922,
+            "n": 17
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 108,
+            "Peff_mce": 2.6291,
+            "Qtr_lh": 25230,
+            "V_ms": 1.265,
+            "Yls_mce": 0.1019,
+            "n": 18
+          }
+        ]
+      },
+      "postes": {
+        "postes": [
+          {
+            "duree_h": 2.25,
+            "poste_id": 1,
+            "total_debit_m3h": 35.78,
+            "total_goutteurs": 10311,
+            "total_superficie_m2": 46400,
+            "units": [
+              {
+                "culture": "AGRUME",
+                "debit_m3h": 35.78,
+                "nb_goutteurs": 10311,
+                "superficie_m2": 46400,
+                "unit_id": "U1"
+              }
+            ],
+            "variation_debit_pct": 0
+          }
+        ],
+        "total_goutteurs": 10311,
+        "total_superficie_m2": 46400
+      },
+      "rampe": {
+        "Dr": 13.8,
+        "Eg": 1.66,
+        "Lpn": 64.74,
+        "Lpx": 1.66,
+        "Lr": 66,
+        "Pmax": 9.9358,
+        "Pmin": 9.0454,
+        "nb_troncons": 39,
+        "pente": 0,
+        "qg": 7.54,
+        "troncons": [
+          {
+            "DZ_m": 0,
+            "Lcum_m": 1.66,
+            "Peff_mce": 9.9358,
+            "Qtr_lh": 300,
+            "V_ms": 0.557,
+            "Yls_mce": 0.0642,
+            "n": 1
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 3.32,
+            "Peff_mce": 9.8744,
+            "Qtr_lh": 292.46,
+            "V_ms": 0.543,
+            "Yls_mce": 0.0614,
+            "n": 2
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 4.98,
+            "Peff_mce": 9.8157,
+            "Qtr_lh": 284.92,
+            "V_ms": 0.529,
+            "Yls_mce": 0.0587,
+            "n": 3
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 6.64,
+            "Peff_mce": 9.7597,
+            "Qtr_lh": 277.38,
+            "V_ms": 0.515,
+            "Yls_mce": 0.056,
+            "n": 4
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 8.3,
+            "Peff_mce": 9.7063,
+            "Qtr_lh": 269.84,
+            "V_ms": 0.501,
+            "Yls_mce": 0.0534,
+            "n": 5
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 9.96,
+            "Peff_mce": 9.6556,
+            "Qtr_lh": 262.3,
+            "V_ms": 0.487,
+            "Yls_mce": 0.0508,
+            "n": 6
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 11.62,
+            "Peff_mce": 9.6073,
+            "Qtr_lh": 254.76,
+            "V_ms": 0.473,
+            "Yls_mce": 0.0482,
+            "n": 7
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 13.28,
+            "Peff_mce": 9.5615,
+            "Qtr_lh": 247.22,
+            "V_ms": 0.459,
+            "Yls_mce": 0.0458,
+            "n": 8
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 14.94,
+            "Peff_mce": 9.5182,
+            "Qtr_lh": 239.68,
+            "V_ms": 0.445,
+            "Yls_mce": 0.0434,
+            "n": 9
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 16.6,
+            "Peff_mce": 9.4772,
+            "Qtr_lh": 232.14,
+            "V_ms": 0.431,
+            "Yls_mce": 0.041,
+            "n": 10
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 18.26,
+            "Peff_mce": 9.4385,
+            "Qtr_lh": 224.6,
+            "V_ms": 0.417,
+            "Yls_mce": 0.0387,
+            "n": 11
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 19.92,
+            "Peff_mce": 9.402,
+            "Qtr_lh": 217.06,
+            "V_ms": 0.403,
+            "Yls_mce": 0.0365,
+            "n": 12
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 21.58,
+            "Peff_mce": 9.3677,
+            "Qtr_lh": 209.52,
+            "V_ms": 0.389,
+            "Yls_mce": 0.0343,
+            "n": 13
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 23.24,
+            "Peff_mce": 9.3356,
+            "Qtr_lh": 201.98,
+            "V_ms": 0.375,
+            "Yls_mce": 0.0321,
+            "n": 14
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 24.9,
+            "Peff_mce": 9.3055,
+            "Qtr_lh": 194.44,
+            "V_ms": 0.361,
+            "Yls_mce": 0.0301,
+            "n": 15
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 26.56,
+            "Peff_mce": 9.2775,
+            "Qtr_lh": 186.9,
+            "V_ms": 0.347,
+            "Yls_mce": 0.0281,
+            "n": 16
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 28.22,
+            "Peff_mce": 9.2514,
+            "Qtr_lh": 179.36,
+            "V_ms": 0.333,
+            "Yls_mce": 0.0261,
+            "n": 17
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 29.88,
+            "Peff_mce": 9.2272,
+            "Qtr_lh": 171.82,
+            "V_ms": 0.319,
+            "Yls_mce": 0.0242,
+            "n": 18
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 31.54,
+            "Peff_mce": 9.2048,
+            "Qtr_lh": 164.28,
+            "V_ms": 0.305,
+            "Yls_mce": 0.0224,
+            "n": 19
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 33.2,
+            "Peff_mce": 9.1842,
+            "Qtr_lh": 156.74,
+            "V_ms": 0.291,
+            "Yls_mce": 0.0206,
+            "n": 20
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 34.86,
+            "Peff_mce": 9.1652,
+            "Qtr_lh": 149.2,
+            "V_ms": 0.277,
+            "Yls_mce": 0.0189,
+            "n": 21
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 36.52,
+            "Peff_mce": 9.148,
+            "Qtr_lh": 141.66,
+            "V_ms": 0.263,
+            "Yls_mce": 0.0173,
+            "n": 22
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 38.18,
+            "Peff_mce": 9.1323,
+            "Qtr_lh": 134.12,
+            "V_ms": 0.249,
+            "Yls_mce": 0.0157,
+            "n": 23
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 39.84,
+            "Peff_mce": 9.1181,
+            "Qtr_lh": 126.58,
+            "V_ms": 0.235,
+            "Yls_mce": 0.0142,
+            "n": 24
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 41.5,
+            "Peff_mce": 9.1053,
+            "Qtr_lh": 119.04,
+            "V_ms": 0.221,
+            "Yls_mce": 0.0127,
+            "n": 25
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 43.16,
+            "Peff_mce": 9.094,
+            "Qtr_lh": 111.5,
+            "V_ms": 0.207,
+            "Yls_mce": 0.0114,
+            "n": 26
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 44.82,
+            "Peff_mce": 9.0839,
+            "Qtr_lh": 103.96,
+            "V_ms": 0.193,
+            "Yls_mce": 0.0101,
+            "n": 27
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 46.48,
+            "Peff_mce": 9.0751,
+            "Qtr_lh": 96.42,
+            "V_ms": 0.179,
+            "Yls_mce": 0.0088,
+            "n": 28
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 48.14,
+            "Peff_mce": 9.0704,
+            "Qtr_lh": 88.88,
+            "V_ms": 0.165,
+            "Yls_mce": 0.0047,
+            "n": 29
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 49.8,
+            "Peff_mce": 9.0661,
+            "Qtr_lh": 81.34,
+            "V_ms": 0.151,
+            "Yls_mce": 0.0043,
+            "n": 30
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 51.46,
+            "Peff_mce": 9.0622,
+            "Qtr_lh": 73.8,
+            "V_ms": 0.137,
+            "Yls_mce": 0.0039,
+            "n": 31
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 53.12,
+            "Peff_mce": 9.0587,
+            "Qtr_lh": 66.26,
+            "V_ms": 0.123,
+            "Yls_mce": 0.0035,
+            "n": 32
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 54.78,
+            "Peff_mce": 9.0556,
+            "Qtr_lh": 58.72,
+            "V_ms": 0.109,
+            "Yls_mce": 0.0031,
+            "n": 33
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 56.44,
+            "Peff_mce": 9.0529,
+            "Qtr_lh": 51.18,
+            "V_ms": 0.095,
+            "Yls_mce": 0.0027,
+            "n": 34
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 58.1,
+            "Peff_mce": 9.0506,
+            "Qtr_lh": 43.64,
+            "V_ms": 0.081,
+            "Yls_mce": 0.0023,
+            "n": 35
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 59.76,
+            "Peff_mce": 9.0487,
+            "Qtr_lh": 36.1,
+            "V_ms": 0.067,
+            "Yls_mce": 0.0019,
+            "n": 36
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 61.42,
+            "Peff_mce": 9.0472,
+            "Qtr_lh": 28.56,
+            "V_ms": 0.053,
+            "Yls_mce": 0.0015,
+            "n": 37
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 63.08,
+            "Peff_mce": 9.0461,
+            "Qtr_lh": 21.02,
+            "V_ms": 0.039,
+            "Yls_mce": 0.0011,
+            "n": 38
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 64.74,
+            "Peff_mce": 9.0454,
+            "Qtr_lh": 13.48,
+            "V_ms": 0.025,
+            "Yls_mce": 0.0007,
+            "n": 39
+          }
+        ]
+      }
+    }
+  },
+  {
+    "conception_id": "4ee91401-4320-4aba-822b-6c9486c86e12",
+    "folder_id": "05e41837-c628-4872-b339-d5c3e7875338f20",
+    "created_at": "2026-06-12T16:03:20.276123+00:00",
+    "updated_at": "2026-06-12T16:03:20.276123+00:00",
+    "input": {
+      "dossier_name": "DOS_KM12398_2025",
+      "folder_id": "05e41837-c628-4872-b339-d5c3e7875338f20",
+      "cultures": [
+        {
+          "name": "AGRUME",
+          "ET0": 6,
+          "Kc": 0.65,
+          "Kr": 0.8
+        }
+      ],
+      "emitters": [
+        {
+          "culture": "AGRUME",
+          "debit_goutteur": 3.47,
+          "ecart_rampe": 6,
+          "ecart_goutteur": 0.75,
+          "nb_rampes": 2,
+          "Pn": 10
+        }
+      ],
+      "emitter_params": {
+        "debit_goutteur": 3.47,
+        "ecart_goutteur": 0.75,
+        "ecart_rampe": 6
+      },
+      "postes": [
+        {
+          "poste_id": 1,
+          "duree_h": 2.25,
+          "units": [
+            {
+              "unit_id": "U1",
+              "culture": "AGRUME",
+              "superficie": 46400
+            }
+          ]
+        }
+      ],
+      "rampe": {
+        "Lr": 66,
+        "Eg": 1.66,
+        "qg": 7.54,
+        "Dr": 13.8,
+        "pente": 0,
+        "Pentree": 10,
+        "Qr": 300
+      },
+      "porte_rampe": {
+        "Lpr": 108,
+        "Edepart": 6,
+        "Qpr": 25230,
+        "pente": 3.1,
+        "Pentree": 0,
+        "Qdepart": 1402,
+        "diameter_mm": 84
+      },
+      "conduites": [
+        {
+          "troncon": "T1",
+          "debit": 51.68,
+          "diam_ext": 200,
+          "diam_int": 117,
+          "longueur": 115
+        }
+      ],
+      "pompe_bassin": {
+        "Q": 38.86,
+        "Pa": 23.2,
+        "PDCmax": 10,
+        "Ha": 2.85,
+        "NPSH": 5.15
+      },
+      "pompe_forage": {
+        "Q": 38.5,
+        "Lfb": 123,
+        "diam_int": 103.7,
+        "delta_z": 1.4,
+        "delta_pfb": 3.2,
+        "Nd": 160,
+        "delta_pc": 5.2,
+        "rendement": 72
+      },
+      "bassin": {
+        "hauteur": 4,
+        "longueur_gueule": 45,
+        "largeur_gueule": 33,
+        "longueur_radier": 37,
+        "largeur_radier": 25,
+        "superficie_nette_ha": 99,
+        "besoins_m3j": 551.29
+      }
+    },
+    "results": {
+      "bassin": {
+        "S_interne_m2": 1549,
+        "S_parois_larg_m2": 264,
+        "S_parois_long_m2": 360,
+        "S_perimetre_m2": 243,
+        "S_radier_m2": 925,
+        "S_totale_m2": 1884.5,
+        "autonomie_j": 8.7,
+        "vol_par_ha_m3": 48.2,
+        "volume_m3": 4776.02
+      },
+      "besoins": [
+        {
+          "B_brute_mm": 4.875,
+          "B_net_mm": 3.9,
+          "ET0": 6,
+          "Kc": 0.65,
+          "Kr": 0.8,
+          "culture": "AGRUME"
+        }
+      ],
+      "conduites": [
+        {
+          "debit_m3h": 51.68,
+          "diam_ext_mm": 200,
+          "diam_int_mm": 117,
+          "longueur_m": 115,
+          "troncon": "T1",
+          "vitesse_ms": 1.335
+        }
+      ],
+      "distributeurs": [
+        {
+          "Pf": 1.17,
+          "Pn": 10,
+          "Sg": 4.5,
+          "culture": "AGRUME",
+          "debit_goutteur": 3.47,
+          "delta_P": 1.67,
+          "ecart_goutteur": 0.75,
+          "ecart_rampe": 6,
+          "nb_rampes": 2,
+          "x": 1.0973
+        }
+      ],
+      "pompe_bassin": {
+        "HMT_mce": 36.05,
+        "Ha_m": 2.85,
+        "NPSH_m": 5.15,
+        "PDCmax_mce": 10,
+        "Pa_mce": 23.2,
+        "Q_m3h": 38.86,
+        "puissance_kw": 5.09,
+        "rendement_pct": 75
+      },
+      "pompe_forage": {
+        "HMT_mce": 169.8,
+        "Lfb_m": 123,
+        "Nd_m": 160,
+        "Q_m3h": 38.5,
+        "delta_pc_mce": 5.2,
+        "delta_pfb_mce": 3.2,
+        "delta_z_m": 1.4,
+        "diam_int_mm": 103.7,
+        "puissance_kw": 24.74,
+        "rendement_pct": 72
+      },
+      "porte_rampe": {
+        "Lpr": 108,
+        "Pmax": 2.629,
+        "Pmin": 0.185,
+        "diameter_mm": 84,
+        "nb_troncons": 18,
+        "troncons": [
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 6,
+            "Peff_mce": 0.1854,
+            "Qtr_lh": 1402,
+            "V_ms": 0.07,
+            "Yls_mce": 0.0006,
+            "n": 1
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 12,
+            "Peff_mce": 0.3692,
+            "Qtr_lh": 2803.65,
+            "V_ms": 0.141,
+            "Yls_mce": 0.0022,
+            "n": 2
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 18,
+            "Peff_mce": 0.5507,
+            "Qtr_lh": 4205.29,
+            "V_ms": 0.211,
+            "Yls_mce": 0.0044,
+            "n": 3
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 24,
+            "Peff_mce": 0.7294,
+            "Qtr_lh": 5606.94,
+            "V_ms": 0.281,
+            "Yls_mce": 0.0073,
+            "n": 4
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 30,
+            "Peff_mce": 0.9046,
+            "Qtr_lh": 7008.59,
+            "V_ms": 0.351,
+            "Yls_mce": 0.0108,
+            "n": 5
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 36,
+            "Peff_mce": 1.0757,
+            "Qtr_lh": 8410.24,
+            "V_ms": 0.422,
+            "Yls_mce": 0.0149,
+            "n": 6
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 42,
+            "Peff_mce": 1.2422,
+            "Qtr_lh": 9811.88,
+            "V_ms": 0.492,
+            "Yls_mce": 0.0195,
+            "n": 7
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 48,
+            "Peff_mce": 1.4035,
+            "Qtr_lh": 11213.53,
+            "V_ms": 0.562,
+            "Yls_mce": 0.0247,
+            "n": 8
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 54,
+            "Peff_mce": 1.5592,
+            "Qtr_lh": 12615.18,
+            "V_ms": 0.632,
+            "Yls_mce": 0.0303,
+            "n": 9
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 60,
+            "Peff_mce": 1.7088,
+            "Qtr_lh": 14016.82,
+            "V_ms": 0.703,
+            "Yls_mce": 0.0364,
+            "n": 10
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 66,
+            "Peff_mce": 1.8517,
+            "Qtr_lh": 15418.47,
+            "V_ms": 0.773,
+            "Yls_mce": 0.043,
+            "n": 11
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 72,
+            "Peff_mce": 1.9876,
+            "Qtr_lh": 16820.12,
+            "V_ms": 0.843,
+            "Yls_mce": 0.0501,
+            "n": 12
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 78,
+            "Peff_mce": 2.1159,
+            "Qtr_lh": 18221.76,
+            "V_ms": 0.913,
+            "Yls_mce": 0.0577,
+            "n": 13
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 84,
+            "Peff_mce": 2.2363,
+            "Qtr_lh": 19623.41,
+            "V_ms": 0.984,
+            "Yls_mce": 0.0656,
+            "n": 14
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 90,
+            "Peff_mce": 2.3482,
+            "Qtr_lh": 21025.06,
+            "V_ms": 1.054,
+            "Yls_mce": 0.0741,
+            "n": 15
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 96,
+            "Peff_mce": 2.4513,
+            "Qtr_lh": 22426.71,
+            "V_ms": 1.124,
+            "Yls_mce": 0.0829,
+            "n": 16
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 102,
+            "Peff_mce": 2.5451,
+            "Qtr_lh": 23828.35,
+            "V_ms": 1.194,
+            "Yls_mce": 0.0922,
+            "n": 17
+          },
+          {
+            "DZ_m": 0.186,
+            "D_mm": 84,
+            "Lcum_m": 108,
+            "Peff_mce": 2.6291,
+            "Qtr_lh": 25230,
+            "V_ms": 1.265,
+            "Yls_mce": 0.1019,
+            "n": 18
+          }
+        ]
+      },
+      "postes": {
+        "postes": [
+          {
+            "duree_h": 2.25,
+            "poste_id": 1,
+            "total_debit_m3h": 35.78,
+            "total_goutteurs": 10311,
+            "total_superficie_m2": 46400,
+            "units": [
+              {
+                "culture": "AGRUME",
+                "debit_m3h": 35.78,
+                "nb_goutteurs": 10311,
+                "superficie_m2": 46400,
+                "unit_id": "U1"
+              }
+            ],
+            "variation_debit_pct": 0
+          }
+        ],
+        "total_goutteurs": 10311,
+        "total_superficie_m2": 46400
+      },
+      "rampe": {
+        "Dr": 13.8,
+        "Eg": 1.66,
+        "Lpn": 64.74,
+        "Lpx": 1.66,
+        "Lr": 66,
+        "Pmax": 9.9358,
+        "Pmin": 9.0454,
+        "nb_troncons": 39,
+        "pente": 0,
+        "qg": 7.54,
+        "troncons": [
+          {
+            "DZ_m": 0,
+            "Lcum_m": 1.66,
+            "Peff_mce": 9.9358,
+            "Qtr_lh": 300,
+            "V_ms": 0.557,
+            "Yls_mce": 0.0642,
+            "n": 1
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 3.32,
+            "Peff_mce": 9.8744,
+            "Qtr_lh": 292.46,
+            "V_ms": 0.543,
+            "Yls_mce": 0.0614,
+            "n": 2
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 4.98,
+            "Peff_mce": 9.8157,
+            "Qtr_lh": 284.92,
+            "V_ms": 0.529,
+            "Yls_mce": 0.0587,
+            "n": 3
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 6.64,
+            "Peff_mce": 9.7597,
+            "Qtr_lh": 277.38,
+            "V_ms": 0.515,
+            "Yls_mce": 0.056,
+            "n": 4
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 8.3,
+            "Peff_mce": 9.7063,
+            "Qtr_lh": 269.84,
+            "V_ms": 0.501,
+            "Yls_mce": 0.0534,
+            "n": 5
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 9.96,
+            "Peff_mce": 9.6556,
+            "Qtr_lh": 262.3,
+            "V_ms": 0.487,
+            "Yls_mce": 0.0508,
+            "n": 6
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 11.62,
+            "Peff_mce": 9.6073,
+            "Qtr_lh": 254.76,
+            "V_ms": 0.473,
+            "Yls_mce": 0.0482,
+            "n": 7
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 13.28,
+            "Peff_mce": 9.5615,
+            "Qtr_lh": 247.22,
+            "V_ms": 0.459,
+            "Yls_mce": 0.0458,
+            "n": 8
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 14.94,
+            "Peff_mce": 9.5182,
+            "Qtr_lh": 239.68,
+            "V_ms": 0.445,
+            "Yls_mce": 0.0434,
+            "n": 9
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 16.6,
+            "Peff_mce": 9.4772,
+            "Qtr_lh": 232.14,
+            "V_ms": 0.431,
+            "Yls_mce": 0.041,
+            "n": 10
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 18.26,
+            "Peff_mce": 9.4385,
+            "Qtr_lh": 224.6,
+            "V_ms": 0.417,
+            "Yls_mce": 0.0387,
+            "n": 11
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 19.92,
+            "Peff_mce": 9.402,
+            "Qtr_lh": 217.06,
+            "V_ms": 0.403,
+            "Yls_mce": 0.0365,
+            "n": 12
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 21.58,
+            "Peff_mce": 9.3677,
+            "Qtr_lh": 209.52,
+            "V_ms": 0.389,
+            "Yls_mce": 0.0343,
+            "n": 13
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 23.24,
+            "Peff_mce": 9.3356,
+            "Qtr_lh": 201.98,
+            "V_ms": 0.375,
+            "Yls_mce": 0.0321,
+            "n": 14
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 24.9,
+            "Peff_mce": 9.3055,
+            "Qtr_lh": 194.44,
+            "V_ms": 0.361,
+            "Yls_mce": 0.0301,
+            "n": 15
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 26.56,
+            "Peff_mce": 9.2775,
+            "Qtr_lh": 186.9,
+            "V_ms": 0.347,
+            "Yls_mce": 0.0281,
+            "n": 16
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 28.22,
+            "Peff_mce": 9.2514,
+            "Qtr_lh": 179.36,
+            "V_ms": 0.333,
+            "Yls_mce": 0.0261,
+            "n": 17
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 29.88,
+            "Peff_mce": 9.2272,
+            "Qtr_lh": 171.82,
+            "V_ms": 0.319,
+            "Yls_mce": 0.0242,
+            "n": 18
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 31.54,
+            "Peff_mce": 9.2048,
+            "Qtr_lh": 164.28,
+            "V_ms": 0.305,
+            "Yls_mce": 0.0224,
+            "n": 19
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 33.2,
+            "Peff_mce": 9.1842,
+            "Qtr_lh": 156.74,
+            "V_ms": 0.291,
+            "Yls_mce": 0.0206,
+            "n": 20
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 34.86,
+            "Peff_mce": 9.1652,
+            "Qtr_lh": 149.2,
+            "V_ms": 0.277,
+            "Yls_mce": 0.0189,
+            "n": 21
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 36.52,
+            "Peff_mce": 9.148,
+            "Qtr_lh": 141.66,
+            "V_ms": 0.263,
+            "Yls_mce": 0.0173,
+            "n": 22
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 38.18,
+            "Peff_mce": 9.1323,
+            "Qtr_lh": 134.12,
+            "V_ms": 0.249,
+            "Yls_mce": 0.0157,
+            "n": 23
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 39.84,
+            "Peff_mce": 9.1181,
+            "Qtr_lh": 126.58,
+            "V_ms": 0.235,
+            "Yls_mce": 0.0142,
+            "n": 24
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 41.5,
+            "Peff_mce": 9.1053,
+            "Qtr_lh": 119.04,
+            "V_ms": 0.221,
+            "Yls_mce": 0.0127,
+            "n": 25
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 43.16,
+            "Peff_mce": 9.094,
+            "Qtr_lh": 111.5,
+            "V_ms": 0.207,
+            "Yls_mce": 0.0114,
+            "n": 26
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 44.82,
+            "Peff_mce": 9.0839,
+            "Qtr_lh": 103.96,
+            "V_ms": 0.193,
+            "Yls_mce": 0.0101,
+            "n": 27
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 46.48,
+            "Peff_mce": 9.0751,
+            "Qtr_lh": 96.42,
+            "V_ms": 0.179,
+            "Yls_mce": 0.0088,
+            "n": 28
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 48.14,
+            "Peff_mce": 9.0704,
+            "Qtr_lh": 88.88,
+            "V_ms": 0.165,
+            "Yls_mce": 0.0047,
+            "n": 29
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 49.8,
+            "Peff_mce": 9.0661,
+            "Qtr_lh": 81.34,
+            "V_ms": 0.151,
+            "Yls_mce": 0.0043,
+            "n": 30
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 51.46,
+            "Peff_mce": 9.0622,
+            "Qtr_lh": 73.8,
+            "V_ms": 0.137,
+            "Yls_mce": 0.0039,
+            "n": 31
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 53.12,
+            "Peff_mce": 9.0587,
+            "Qtr_lh": 66.26,
+            "V_ms": 0.123,
+            "Yls_mce": 0.0035,
+            "n": 32
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 54.78,
+            "Peff_mce": 9.0556,
+            "Qtr_lh": 58.72,
+            "V_ms": 0.109,
+            "Yls_mce": 0.0031,
+            "n": 33
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 56.44,
+            "Peff_mce": 9.0529,
+            "Qtr_lh": 51.18,
+            "V_ms": 0.095,
+            "Yls_mce": 0.0027,
+            "n": 34
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 58.1,
+            "Peff_mce": 9.0506,
+            "Qtr_lh": 43.64,
+            "V_ms": 0.081,
+            "Yls_mce": 0.0023,
+            "n": 35
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 59.76,
+            "Peff_mce": 9.0487,
+            "Qtr_lh": 36.1,
+            "V_ms": 0.067,
+            "Yls_mce": 0.0019,
+            "n": 36
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 61.42,
+            "Peff_mce": 9.0472,
+            "Qtr_lh": 28.56,
+            "V_ms": 0.053,
+            "Yls_mce": 0.0015,
+            "n": 37
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 63.08,
+            "Peff_mce": 9.0461,
+            "Qtr_lh": 21.02,
+            "V_ms": 0.039,
+            "Yls_mce": 0.0011,
+            "n": 38
+          },
+          {
+            "DZ_m": 0,
+            "Lcum_m": 64.74,
+            "Peff_mce": 9.0454,
+            "Qtr_lh": 13.48,
+            "V_ms": 0.025,
+            "Yls_mce": 0.0007,
+            "n": 39
+          }
+        ]
+      }
+    }
+  },
+  {
+    "conception_id": "ccbe31f0-a28d-4712-8f5c-ce25d7397266",
+    "folder_id": "97c85b37-2fe8-4f1e-ace5-964556b681644b4c",
+    "created_at": "2026-06-12T16:04:05.044650+00:00",
+    "updated_at": "2026-06-12T16:04:05.044650+00:00",
+    "input": {
+      "dossier_name": "DOS_LM2334_2008",
+      "folder_id": "97c85b37-2fe8-4f1e-ace5-964556b681644b4c",
       "cultures": [
         {
           "name": "AGRUME",
