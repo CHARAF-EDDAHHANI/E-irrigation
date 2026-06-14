@@ -82,8 +82,8 @@ export default function FoldersList({ onSelectFolder, onFoldersLoaded }) {
       {/* HEADER */}
       <Box sx={{ display: "flex", alignItems: { xs: "flex-start", sm: "center" }, justifyContent: "space-between", flexDirection: { xs: "column", sm: "row" }, gap: 2, mb: 3 }}>
         <Box>
-          <Typography sx={{ fontSize: 20, fontWeight: 800, color: T.text, lineHeight: 1 }}>
-            Dossiers
+          <Typography sx={{ fontSize: 16, fontWeight: 800, color: T.text, lineHeight: 1 }}>
+            Tout les dossiers
           </Typography>
           <Typography sx={{ fontSize: 13, color: T.muted, mt: "4px" }}>
             {folders.length} dossier{folders.length !== 1 ? "s" : ""} au total

@@ -1,157 +1,86 @@
-import json
-import uuid
+"""
+storage_conception.py
+_____________________
+Storage layer — Conception CRUD on Supabase PostgreSQL (SQLAlchemy)
+
+Public function signatures identical to JSON version — routes never change.
+1 folder = 1 conception (unique constraint on folder_id)
+"""
+
+from typing import Optional, List
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import Optional, Dict, List
 
-# ─────────────────────────────────────────────
-# STORAGE FILE
-# ─────────────────────────────────────────────
-
-DB_DIR = Path(__file__).parent.parent / "db"
-DB_FILE = DB_DIR / "conceptions.json"
+from engine.extensions import db
+from engine.db_conception import ConceptionDB
+import uuid
 
 
-# ─────────────────────────────────────────────
-# INTERNAL HELPERS
-# ─────────────────────────────────────────────
+# ── HELPERS ───────────────────────────────────────────────────────────────────
 
-def _load() -> List[dict]:
-    DB_DIR.mkdir(parents=True, exist_ok=True)
-
-    if not DB_FILE.exists():
-        DB_FILE.write_text("[]", encoding="utf-8")
-        return []
-
-    try:
-        return json.loads(DB_FILE.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return []
+def _now():
+    return datetime.now(timezone.utc)
 
 
-def _dump(records: List[dict]) -> None:
-    DB_DIR.mkdir(parents=True, exist_ok=True)
-    DB_FILE.write_text(
-        json.dumps(records, ensure_ascii=False, indent=2),
-        encoding="utf-8"
-    )
+# ── CREATE / UPDATE ───────────────────────────────────────────────────────────
+
+def save_conception(folder_id: str, input_data: dict, results: dict) -> dict:
+    """Upsert — 1 folder = 1 conception."""
+    existing = ConceptionDB.query.filter_by(folder_id=folder_id).first()
+
+    if existing:
+        existing.input      = input_data
+        existing.results    = results
+        existing.updated_at = _now()
+        from sqlalchemy.orm.attributes import flag_modified
+        flag_modified(existing, "input")
+        flag_modified(existing, "results")
+    else:
+        existing = ConceptionDB(
+            conception_id = str(uuid.uuid4()),
+            folder_id     = folder_id,
+            input         = input_data,
+            results       = results,
+        )
+        db.session.add(existing)
+
+    db.session.commit()
+    return existing.to_dict()
 
 
-def _now() -> str:
-    return datetime.now(timezone.utc).isoformat()
-
-
-# ─────────────────────────────────────────────
-# CORE UPSERT FUNCTION (1 folder = 1 conception)
-# ─────────────────────────────────────────────
-
-def save_conception(
-    folder_id: str,
-    input_data: dict,
-    results: dict
-) -> dict:
-    """
-    Crée ou met à jour l'unique conception liée à un dossier (1 dossier = 1 conception).
-    """
-    records = _load()
-    now = _now()
-
-    # ─────────────────────────────────────────
-    # UPDATE IF EXISTS (par folder_id)
-    # ─────────────────────────────────────────
-    for rec in records:
-        if rec.get("folder_id") == folder_id:
-            rec["input"] = input_data
-            rec["results"] = results
-            rec["updated_at"] = now
-            _dump(records)
-            return rec
-
-    # ─────────────────────────────────────────
-    # CREATE NEW IF NOT EXISTS
-    # ─────────────────────────────────────────
-    new_record = {
-        "conception_id": str(uuid.uuid4()),
-        "folder_id": folder_id,
-        "created_at": now,
-        "updated_at": now,
-        "input": input_data,
-        "results": results
-    }
-
-    records.append(new_record)
-    _dump(records)
-    return new_record
-
-
-# ─────────────────────────────────────────────
-# GET ALL (MODIFIÉ : RETOURNE LES DONNÉES COMPLÈTES)
-# ─────────────────────────────────────────────
+# ── READ ──────────────────────────────────────────────────────────────────────
 
 def get_all_conceptions() -> List[dict]:
-    """
-    Retourne la liste de toutes les conceptions sans aucun filtre.
-    Idéal pour l'affichage complet des données dans les tableaux.
-    """
-    return _load()
+    rows = ConceptionDB.query.order_by(ConceptionDB.created_at.desc()).all()
+    return [row.to_dict() for row in rows]
 
-
-# ─────────────────────────────────────────────
-# GET BY ID (FULL DETAIL)
-# ─────────────────────────────────────────────
 
 def get_conception_by_id(conception_id: str) -> Optional[dict]:
-    for rec in _load():
-        if rec.get("conception_id") == conception_id:
-            return rec
-    return None
+    row = ConceptionDB.query.filter_by(conception_id=conception_id).first()
+    return row.to_dict() if row else None
 
-
-# ─────────────────────────────────────────────
-# GET BY FOLDER (ONLY ONE RESULT EXPECTED)
-# ─────────────────────────────────────────────
 
 def get_conceptions_by_folder(folder_id: str) -> List[dict]:
-    return [
-        rec for rec in _load()
-        if rec.get("folder_id") == folder_id
-    ]
+    rows = ConceptionDB.query.filter_by(folder_id=folder_id).all()
+    return [row.to_dict() for row in rows]
 
 
-# ─────────────────────────────────────────────
-# DELETE SINGLE
-# ─────────────────────────────────────────────
+# ── DELETE ────────────────────────────────────────────────────────────────────
 
 def delete_conception(conception_id: str) -> bool:
-    records = _load()
-
-    new_records = [
-        r for r in records
-        if r.get("conception_id") != conception_id
-    ]
-
-    if len(new_records) == len(records):
+    row = ConceptionDB.query.filter_by(conception_id=conception_id).first()
+    if not row:
         return False
-
-    _dump(new_records)
+    db.session.delete(row)
+    db.session.commit()
     return True
 
 
-# ─────────────────────────────────────────────
-# DELETE BY FOLDER (CASCADE)
-# ─────────────────────────────────────────────
-
 def delete_conceptions_by_folder(folder_id: str) -> int:
-    records = _load()
-
-    new_records = [
-        r for r in records
-        if r.get("folder_id") != folder_id
-    ]
-
-    deleted = len(records) - len(new_records)
-
-    if deleted > 0:
-        _dump(new_records)
-
-    return deleted
+    rows = ConceptionDB.query.filter_by(folder_id=folder_id).all()
+    count = len(rows)
+    if count == 0:
+        return 0
+    for row in rows:
+        db.session.delete(row)
+    db.session.commit()
+    return count

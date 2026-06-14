@@ -1,8 +1,4 @@
 from flask import Blueprint, request, jsonify
-
-# ─────────────────────────────────────────────────────────────────────────────
-# PROPER ARCHITECTURAL IMPORTS USING YOUR LIVE MODULES
-# ─────────────────────────────────────────────────────────────────────────────
 from models.backlog_box import BacklogBox
 from engine.storage_backlog import get_backlogbox_by_folder, save_backlogbox, get_backlogbox_by_id, get_all_backlogboxes
 from engine.storage_folder import get_folder_by_id
@@ -13,6 +9,18 @@ from utils.auth import (
     get_current_user_object
 )
 
+from engine.extensions import supabase
+import uuid
+import re
+import unicodedata
+
+def _sanitize_filename(filename: str) -> str:
+    normalized = unicodedata.normalize("NFKD", filename)
+    ascii_name = normalized.encode("ascii", "ignore").decode("ascii")
+    clean      = re.sub(r"[^\w\.\-]", "_", ascii_name)
+    clean      = re.sub(r"_+", "_", clean).strip("_")
+    return clean if clean else "file"
+
 api_backlog = Blueprint("api_backlog", __name__, url_prefix="/api")
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -21,47 +29,40 @@ api_backlog = Blueprint("api_backlog", __name__, url_prefix="/api")
 @api_backlog.route("/backlog/folder/<string:folder_id>", methods=["GET"])
 @require_auth
 def get_or_create_chat(folder_id):
-    """
-    Loads or initializes a discussion box when a user clicks 'Message'.
-    Enforces active business authorization constraints against the live database.
-    """
     current_user = get_current_user_object()
-    
-    # 1. Fetch the real folder record from your storage layer
-    folder = get_folder_by_id(folder_id)
-    if not folder:
-        return jsonify({"success": False, "error": "Targeted folder record was not found."}), 404
 
-    # Convert folder object to dict if it is stored as an instance model
-    folder_data = folder.to_dict() if hasattr(folder, "to_dict") else folder
+    try:
+        folder = get_folder_by_id(folder_id)
+        if not folder:
+            return jsonify({"success": False, "error": "Dossier introuvable."}), 404
 
-    # 2. Enforce Strict Security Boundaries (RBAC)
-    # Admin has complete system access.
-    # Agents can only access folders they explicitly created.
-    if current_user.role == "agent" and folder_data.get("created_by") != current_user.user_id:
-        return jsonify({"success": False, "error": "Access denied. Folder ownership mismatch."}), 403
-        
-    # Companies can only access if their profile name matches the folder company property
-    if current_user.role == "company" and folder_data.get("company") != current_user.fullName:
-        return jsonify({"success": False, "error": "Access denied. Restricted vendor access."}), 403
+        # RBAC — company can only access folders linked to their phone
+        if current_user.role == "company" and folder.company_phone != current_user.user_id:
+            return jsonify({"success": False, "error": "Accès refusé — ce dossier ne vous appartient pas."}), 403
 
-    # 3. Query message engine array for existing room records
-    box = get_backlogbox_by_folder(folder_id)
-    
-    # 4. Lazy-creation loop: Initialize a new thread on the fly if it does not exist
-    if not box:
-        # If a company initiates the chat, use its phone number as the company_id pointer.
-        # Otherwise, fall back to the designated default or retrieve it from the system user pool.
-        company_phone_ref = current_user.phone if current_user.role == "company" else "+212519190990"
-        
-        box = BacklogBox(
-            folder_id=folder_id,
-            agent_id=folder_data.get("created_by"),
-            company_id=company_phone_ref
-        )
-        save_backlogbox(box)
+        box = get_backlogbox_by_folder(folder_id)
 
-    return jsonify({"success": True, "data": box.to_dict()}), 200
+        if not box:
+            company_phone_ref = (
+                current_user.user_id          # company → their own phone
+                if current_user.role == "company"
+                else folder.company_phone or ""  # admin/agent → folder's company_phone
+            )
+
+            if not company_phone_ref:
+                return jsonify({"success": False, "error": "Téléphone de la société manquant sur ce dossier."}), 400
+
+            box = BacklogBox(
+                folder_id  = folder_id,
+                created_by = current_user.user_id,
+                company_id = company_phone_ref,
+            )
+            save_backlogbox(box)
+
+        return jsonify({"success": True, "data": box.to_dict()}), 200
+
+    except Exception as exc:
+        return jsonify({"success": False, "error": f"Erreur initialisation messagerie : {exc}"}), 500
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -70,34 +71,64 @@ def get_or_create_chat(folder_id):
 @api_backlog.route("/backlog/<string:backlogbox_id>", methods=["POST"])
 @require_auth
 def post_chat_message(backlogbox_id):
-    """
-    Appends a fresh message into a folder's embedded chat array.
-    Automatically captures user identity strings from your secure auth cookie token.
-    """
     current_user = get_current_user_object()
-    data = request.get_json() or {}
-    content = data.get("content", "").strip()
 
-    if not content:
-        return jsonify({"success": False, "error": "Message content body cannot be empty."}), 400
-
-    # Ensure the backlogbox was initialized first via the GET route click process
-    box = get_backlogbox_by_id(backlogbox_id)
-    if not box:
-        return jsonify({"success": False, "error": "Active target room must be initialized first."}), 404
-
-    # Enforce safe insertion by pushing directly into the embedded array method
     try:
+        # Support both JSON and multipart/form-data
+        if request.content_type and "application/json" in request.content_type:
+            data    = request.get_json() or {}
+            content = data.get("content", "").strip()
+            file    = None
+        else:
+            data    = request.form
+            content = data.get("content", "").strip()
+            file    = request.files.get("file")
+
+        if not content and not file:
+            return jsonify({"success": False, "error": "Le message ne peut pas être vide."}), 400
+
+        box = get_backlogbox_by_id(backlogbox_id)
+        if not box:
+            return jsonify({"success": False, "error": "Salle de messagerie introuvable — initialisez d'abord le chat."}), 404
+
+        # RBAC — company can only post in their own boxes
+        if current_user.role == "company" and box.company_id != current_user.user_id:
+            return jsonify({"success": False, "error": "Accès refusé — vous n'êtes pas autorisé à écrire dans cette conversation."}), 403
+
+        # Handle file upload
+        file_url  = None
+        file_name = None
+        if file and file.filename:
+            try:
+                safe_name  = _sanitize_filename(file.filename)
+                filename   = f"backlog/{backlogbox_id}/{uuid.uuid4()}_{safe_name}"
+                file_bytes = file.read()
+                supabase.storage.from_("documents").upload(
+                    path=filename,
+                    file=file_bytes,
+                    file_options={"content-type": file.content_type or "application/octet-stream"}
+                )
+                file_url  = supabase.storage.from_("documents").get_public_url(filename)
+                file_name = file.filename
+            except Exception as exc:
+                return jsonify({"success": False, "error": f"Échec de l'upload du fichier : {exc}"}), 500
+
         box.add_message(
-            content=content,
-            sender_id=current_user.user_id,  # Will accurately bind UUIDv4 strings or Company phone keys
-            sender_type=current_user.role
+            content     = content or "",
+            sender_id   = current_user.user_id,
+            sender_type = current_user.role,
+            file_url    = file_url,
+            file_name   = file_name,
         )
         save_backlogbox(box)
-    except ValueError as e:
-        return jsonify({"success": False, "error": str(e)}), 400
 
-    return jsonify({"success": True, "data": box.to_dict()}), 201
+        return jsonify({"success": True, "data": box.to_dict()}), 201
+
+    except ValueError as exc:
+        return jsonify({"success": False, "error": f"Données invalides : {exc}"}), 400
+    except Exception as exc:
+        return jsonify({"success": False, "error": f"Erreur envoi message : {exc}"}), 500
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # ROUTE: RETRIEVE ALL BACKLOG BOXES BASED ON USER ROLE
@@ -105,37 +136,28 @@ def post_chat_message(backlogbox_id):
 @api_backlog.route("/backlogs", methods=["GET"])
 @require_auth
 def get_user_backlogboxes():
-    """
-    Retrieves and filters chat rooms (BacklogBoxes) based on the user's role.
-    Admins see everything. Agents, companies, and farmers see their own rooms.
-    """
-    # 1. Capture secure user identity and role from the session token
     current_user = get_current_user_object()
-    user_id = current_user.user_id
-    user_role = getattr(current_user, "role", "").lower()  # Normalize role string (e.g., 'admin', 'agent')
 
-    # 2. Fetch the full list of raw chat rooms from storage
-    all_boxes = get_all_backlogboxes()
-    user_boxes = []
+    try:
+        all_boxes = get_all_backlogboxes()
 
-    # 3. Apply role-based filtering logic
-    for b in all_boxes:
-        # ROLE: Admin -> Bypass all filters and grant total access
-        if user_role == "admin":
-            box_obj = BacklogBox.from_dict(b)
-            user_boxes.append(box_obj.to_dict())
-            continue
+        if current_user.role == "admin":
+            # Admin → all boxes
+            return jsonify({"success": True, "data": all_boxes}), 200
 
-        is_participant = (
-            b.get("agent_id") == user_id or 
-            b.get("company_id") == user_id or 
-            b.get("user_id") == user_id
-        )
-        
-        if is_participant:
-            user_boxes.append(b)
+        if current_user.role == "agent":
+            # Agent → all boxes (same as admin for messaging)
+            return jsonify({"success": True, "data": all_boxes}), 200
 
-    return jsonify({
-        "success": True, 
-        "data": user_boxes
-    }), 200
+        if current_user.role == "company":
+            # Company → only boxes where company_id = their user_id (phone)
+            filtered = [
+                b for b in all_boxes
+                if b.get("company_id") == current_user.user_id
+            ]
+            return jsonify({"success": True, "data": filtered}), 200
+
+        return jsonify({"success": False, "error": "Rôle non reconnu."}), 403
+
+    except Exception as exc:
+        return jsonify({"success": False, "error": f"Erreur récupération messagerie : {exc}"}), 500

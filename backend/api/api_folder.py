@@ -10,7 +10,7 @@ from models.folder import Folder
 from engine.storage_folder import (
     save_folder,
     get_all_folders,
-    get_folders_by_agent,
+    get_folders_by_company_phone,
     get_folder_by_id,
     update_folder,
     delete_folder,
@@ -18,14 +18,26 @@ from engine.storage_folder import (
 )
 from engine.storage_user import get_user_by_id
 from utils.auth import require_auth, get_current_user_object
+from engine.extensions import db, supabase
+from engine.db_document import DocumentDB
+import uuid
+import re
+import unicodedata
+
+def _sanitize_filename(filename: str) -> str:
+    normalized = unicodedata.normalize("NFKD", filename)
+    ascii_name = normalized.encode("ascii", "ignore").decode("ascii")
+    clean = re.sub(r"[^\w\.\-]", "_", ascii_name)
+    clean = re.sub(r"_+", "_", clean).strip("_")
+    return clean if clean else "file"
 
 
 api_folder = Blueprint("api_folder", __name__, url_prefix="/api")
 
 
 # ── CONSTANTS ─────────────────────────────────────────────────────────────────
-ALLOWED_ROLES = {"admin", "agent"}
-VALID_PHASES = {"prealable", "validation", "execution", "cloture"}
+ALLOWED_ROLES = {"admin", "agent", "company", "farmer"}
+VALID_PHASES = {"observation", "validation", "execution", "cloture"}
 
 
 # ── ROLE CHECK ─────────────────────────────────────────────────────────────────
@@ -46,19 +58,23 @@ def _parse_financials(data: dict, existing: Folder = None) -> dict:
         except (ValueError, TypeError):
             raise ValueError(f"'{key}' doit être un nombre valide.")
 
-    area = _float("area")
+    # Added area_brut calculation to handle floats correctly
+    area_brut = _float("area_brut")
+    area_net = _float("area_net")
     investment = _float("investment")
     subsidy = _float("subsidy")
     reimbursed_inv = _float("reimbursed_investment")
 
     return {
-        "area": area,
+        "area_brut": area_brut,
+        "area_net": area_net,
         "investment": investment,
         "subsidy": subsidy,
         "reimbursed_investment": reimbursed_inv,
-        "investment_per_hectare": round(investment / area, 2) if area > 0 else 0.0,
+        "investment_per_hectare": round(investment / area_net, 2) if area_net > 0 else 0.0,
         "percentage": round((subsidy / reimbursed_inv) * 100, 2) if reimbursed_inv > 0 else 0.0,
     }
+
 
 
 # ── RESPONSE SERIALIZER ───────────────────────────────────────────────────────
@@ -70,22 +86,24 @@ def _folder_response(folder: Folder) -> dict:
         user.fullName if user else "Inconnu"
     )
 
+     # Attach documents linked to this folder
+    docs = DocumentDB.query.filter_by(folder_id=folder.folder_id).all()
+    d["documents"] = [doc.to_dict() for doc in docs]
+
     return d
-
-
 # ── LIGHTWEIGHT FIELDS ────────────────────────────────────────────────────────
 _LIGHTWEIGHT_FIELDS = {
     "folder_id",
     "folder_name",
     "beneficiary_name",
-    "area",
+    "area_net",
     "phase",
     "crop",
+    "company_phone",
     "created_by_user_fullname",
     "created_at",
     "updated_at",
 }
-
 
 def _folder_light_response(folder):
     data = _folder_response(folder)
@@ -102,11 +120,16 @@ def create_folder():
     if err:
         return err
 
-    data = request.get_json(force=True) or {}
+    data = request.form
 
-    beneficiary_name = str(data.get("beneficiary_name") or "").strip()
-    national_id = str(data.get("national_id") or "").strip()
-    deposit_year_raw = data.get("deposit_year")
+    company_phone      = str(data.get("company_phone") or "").strip()
+    beneficiary_name   = str(data.get("beneficiary_name") or "").strip()
+    national_id        = str(data.get("national_id") or "").strip()
+    deposit_year_raw   = data.get("deposit_year")
+    adress             = str(data.get("adress") or "").strip()
+    adress_corr        = str(data.get("adress_corr") or "").strip()
+    serial_number_saba = str(data.get("serial_number_saba") or "").strip()
+    ct_cda_cmv         = str(data.get("ct_cda_cmv") or "").strip()
 
     missing = [k for k, v in [
         ("beneficiary_name", beneficiary_name),
@@ -124,7 +147,7 @@ def create_folder():
     except (ValueError, TypeError):
         return jsonify({"message": "deposit_year invalide (1990–2100)."}), 400
 
-    phase = data.get("phase", "prealable")
+    phase = data.get("phase", "observation")
     if phase not in VALID_PHASES:
         return jsonify({"message": "Phase invalide."}), 400
 
@@ -133,22 +156,55 @@ def create_folder():
     except ValueError as exc:
         return jsonify({"message": str(exc)}), 400
 
+    # Handle file uploads
+    uploaded_urls = []
+    files = request.files.getlist("files")
+    for file in files:
+        if file and file.filename:
+            try:
+                safe_name  = _sanitize_filename(file.filename)
+                filename   = f"folders/{uuid.uuid4()}_{safe_name}"
+                file_bytes = file.read()
+                supabase.storage.from_("documents").upload(
+                    path=filename,
+                    file=file_bytes,
+                    file_options={"content-type": file.content_type or "application/pdf"}
+                )
+                url = supabase.storage.from_("documents").get_public_url(filename)
+                uploaded_urls.append({ "file_name": file.filename, "file_url": url })
+            except Exception as exc:
+                return jsonify({"message": f"Erreur upload fichier : {exc}"}), 500
+
     try:
         folder = Folder(
-            beneficiary_name=beneficiary_name,
-            national_id=national_id,
-            deposit_year=deposit_year,
-            phase=phase,
-            cvm=str(data.get("cvm") or "").strip(),
-            company=str(data.get("company") or "").strip(),
-            crop=str(data.get("crop") or "").strip(),
-            documents=str(data.get("documents") or "").strip(),
-            comment=str(data.get("comment") or "").strip(),
-            created_by=current_user.user_id,
+            company_phone      = company_phone,
+            adress             = adress,
+            adress_corr        = adress_corr,
+            serial_number_saba = serial_number_saba,
+            beneficiary_name   = beneficiary_name,
+            national_id        = national_id,
+            deposit_year       = deposit_year,
+            phase              = phase,
+            ct_cda_cvm         = ct_cda_cmv,
+            company            = str(data.get("company") or "").strip(),
+            crop               = str(data.get("crop") or "").strip(),
+            documents          = str(data.get("documents") or "").strip(),
+            comment            = str(data.get("comment") or "").strip(),
+            created_by         = current_user.user_id,
             **fin,
         )
-
         save_folder(folder)
+
+        # Save document records
+        for doc_data in uploaded_urls:
+            doc = DocumentDB(
+                folder_id   = folder.folder_id,
+                file_name   = doc_data["file_name"],
+                file_url    = doc_data["file_url"],
+                uploaded_by = current_user.user_id,
+            )
+            db.session.add(doc)
+        db.session.commit()
 
     except ValueError as exc:
         return jsonify({"message": str(exc)}), 409
@@ -156,10 +212,10 @@ def create_folder():
         return jsonify({"message": f"Erreur création : {exc}"}), 400
 
     return jsonify({
-        "message": "Dossier créé avec succès.",
-        "folder": _folder_response(folder),
+        "message":   "Dossier créé avec succès.",
+        "folder":    _folder_response(folder),
+        "documents": uploaded_urls,
     }), 201
-
 
 # ── LIST FOLDERS ──────────────────────────────────────────────────────────────
 @api_folder.route("/allfolders", methods=["GET"])
@@ -172,22 +228,16 @@ def list_folders():
         return err
 
     try:
-        folders = (
-            get_all_folders()
-            if current_user.role == "admin"
-            else get_folders_by_agent(current_user.user_id)
-        )
+        if current_user.role == "company":
+            folders = get_folders_by_company_phone(current_user.user_id)
+        else:
+            # admin, agent, farmer → all folders
+            folders = get_all_folders()
 
-        response_data = [
-            _folder_light_response(folder)
-            for folder in folders
-        ]
-        
-        return jsonify(response_data), 200
+        return jsonify([_folder_light_response(f) for f in folders]), 200
 
     except Exception as exc:
         return jsonify({"message": f"Erreur lecture : {exc}"}), 500
-
 
 # ── GET ONE ───────────────────────────────────────────────────────────────────
 @api_folder.route("/folders/<folder_id>", methods=["GET"])
@@ -203,7 +253,8 @@ def get_folder(folder_id: str):
     if not folder:
         return jsonify({"message": "Dossier introuvable."}), 404
 
-    if current_user.role != "admin" and folder.created_by != current_user.user_id:
+    # Company can only see their own folders
+    if current_user.role == "company" and folder.company_phone != current_user.user_id:
         return jsonify({"message": "Accès refusé."}), 403
 
     return jsonify(_folder_response(folder)), 200

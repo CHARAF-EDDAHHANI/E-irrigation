@@ -14,14 +14,14 @@ import { alpha } from "@mui/material/styles";
 
 // ── TOKENS ────────────────────────────────────────────────────────────────────
 const T = {
-  bg:       "#f0fdf4",
-  surface:  "#ffffff",
+  bg:       "#8ce9a8",
+  surface:  "#f8f9f9",
   border:   "#dcfce7",
-  green:    "#16a34a",
-  greenDk:  "#14532d",
-  text:     "#0f172a",
-  sub:      "#475569",
-  muted:    "#94a3b8",
+  green:    "#4fc67b",
+  greenDk:  "#09622b",
+  text:     "#149c41",
+  sub:      "#343131",
+  muted:    "#706969",
   active:   "#f0fdf4",
 };
 
@@ -53,7 +53,7 @@ export default function SideBar({ setCurrentPage, currentPage }) {
       {/* LOGO */}
       <Box sx={{ px: 2.5, mb: 4, display: "flex", alignItems: "center", gap: 1.5 }}>
         <Box sx={{
-          width: 32, height: 32, borderRadius: "9px",
+          width: 35, height: 35, borderRadius: "9px",
           background: `linear-gradient(135deg, ${T.greenDk}, ${T.green})`,
           display: "flex", alignItems: "center", justifyContent: "center",
           flexShrink: 0,
@@ -65,8 +65,8 @@ export default function SideBar({ setCurrentPage, currentPage }) {
           </Box>
         </Box>
         <Box>
-          <Typography sx={{ fontSize: 13, fontWeight: 800, color: T.text, lineHeight: 1 }}>ORMVAM</Typography>
-          <Typography sx={{ fontSize: 9.5, color: T.muted, letterSpacing: "0.08em", textTransform: "uppercase", mt: "1px" }}>
+          <Typography sx={{ fontSize: 17, fontWeight: 800, color: T.text, lineHeight: 1 }}>ORMVAM</Typography>
+          <Typography sx={{ fontSize: 10, color: T.muted, letterSpacing: "0.08em", textTransform: "uppercase", mt: "1px" }}>
             Irrigation
           </Typography>
         </Box>

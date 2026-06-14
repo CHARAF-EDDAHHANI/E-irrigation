@@ -1,74 +1,86 @@
 import api from "./api";
 
-// ─────────────────────────────────────────────
-// CREATE FOLDER
-// ─────────────────────────────────────────────
-
-export const CreateFolderAxios = async (form) => {
-
-  // validation
-  if (!form) {
-    throw new Error("Veuillez remplir tous les champs.");
-  }
-
+// ─── CREATE FOLDER (FormData: fields + files) ─────────────────────────────────
+export const CreateFolderAxios = async (body) => {
+  console.log(body);
   try {
-    console.log(form);
-    const response = await api.post(
-      "/create-folder",
-      form
-    );
-
-    return response.data;
-
+    const res = await api.post("/create-folder", body, {
+      headers: {
+        // DO NOT set Content-Type — axios sets multipart boundary automatically
+      },
+      withCredentials: true,
+    });
+    return res.data;
   } catch (error) {
-
-    const errorMsg =
-      error.response?.data?.message ||
-      error.message ||
-      "Création du dossier échouée. Veuillez contacter le support technique.";
-
+    const errorMsg = error.response?.data?.message || error.message || "Erreur lors de la création du dossier";
     throw new Error(errorMsg);
   }
 };
 
-//---------------
-//GET ALL FOLDERS
-//---------------
-export const fetchAllFolders = async() => {
+// ─── GET ALL FOLDERS ──────────────────────────────────────────────────────────
+export const fetchAllFolders = async () => {
   try {
-    const response = await api.get("/allfolders");
-    const data = response.data;
-    
-    if (Array.isArray(data)) {
-      return data;
-    }
+    const res = await api.get("/allfolders");
+    const data = res.data;
+    if (Array.isArray(data)) return data;
     if (data && typeof data === "object") {
       if (Array.isArray(data.folders)) return data.folders;
-      if (Array.isArray(data.data)) return data.data;
-      if (Object.keys(data).length > 0) {
-      return [data];
+      if (Array.isArray(data.data))    return data.data;
+      if (Object.keys(data).length > 0) return [data];
     }
-  }
-  return [];
+    return [];
   } catch (error) {
-    const errorMsg = error.response?.data?.message || error.message || "erreur de trouver les dossier, essayez plus tard";
+    const errorMsg = error.response?.data?.message || error.message || "Erreur de chargement des dossiers";
     throw new Error(errorMsg);
   }
 };
 
-//------------
-// GET FOLDER BY ID
-//-----------
-
+// ─── GET FOLDER BY ID ─────────────────────────────────────────────────────────
 export const fetchFolderById = async (folder_id) => {
   try {
-    const response = await api.get(`/folders/${folder_id}`);
-    return response.data;
+    const res = await api.get(`/folders/${folder_id}`);
+    return res.data;
   } catch (error) {
-    const errorMsg =
-      error.response?.data?.message ||
-      error.message ||
-      "Erreur lors du chargement du dossier";
+    const errorMsg = error.response?.data?.message || error.message || "Erreur lors du chargement du dossier";
+    throw new Error(errorMsg);
+  }
+};
+
+// ─── GET DOCUMENTS BY FOLDER ──────────────────────────────────────────────────
+export const fetchFolderDocuments = async (folder_id) => {
+  try {
+    const res = await api.get(`/folder/${folder_id}/documents`);
+    return Array.isArray(res.data) ? res.data : [];
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || error.message || "Erreur lors du chargement des documents";
+    throw new Error(errorMsg);
+  }
+};
+
+// ─── UPLOAD PDF TO EXISTING FOLDER ───────────────────────────────────────────
+export const uploadFolderDocument = async (folder_id, files) => {
+  try {
+    const body = new FormData();
+    files.forEach(file => body.append("files", file));
+    const res = await api.post(`/folder/${folder_id}/upload`, body, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || error.message || "Erreur lors de l'upload";
+    throw new Error(errorMsg);
+  }
+};
+
+// ─── DELETE DOCUMENT ──────────────────────────────────────────────────────────
+export const deleteFolderDocument = async (folder_id, doc_id) => {
+  try {
+    const res = await api.delete(`/folder/${folder_id}/documents/${doc_id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || error.message || "Erreur lors de la suppression";
     throw new Error(errorMsg);
   }
 };

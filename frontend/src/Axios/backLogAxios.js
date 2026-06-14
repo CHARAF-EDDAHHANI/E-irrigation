@@ -32,39 +32,31 @@ export const fetchOrCreateChatByFolder = async (folder_id) => {
   }
 };
 
-/**
- * ─────────────────────────────────────────────────────────────────────────────
- * APPEND A NEW CHAT MESSAGE BLOCK (POST ROUTE)
- * ─────────────────────────────────────────────────────────────────────────────
- * Appends a fresh text block into the folder's embedded chat array.
- * Note: sender_id and sender_type are captured securely server-side from cookies.
- */
-export const sendMessage = async (backlogbox_id, content) => {
-  if (!backlogbox_id) {
-    throw new Error("erreur pour l'envoi.");
-  }
-  if (!content || content.trim() === "") {
-    throw new Error("Le contenu du message ne peut pas être vide.");
-  }
-
-    try {
-    const response = await api.post(`/backlog/${backlogbox_id}`, {
-      content: content.trim(),
-    });
-    const data = response.data;
-    if (data && data.success && data.data) {
-      return data.data;
+//send message + file
+export const sendMessage = async (backlogbox_id, content, file = null) => {
+  try {
+    let res;
+    if (file) {
+      const body = new FormData();
+      body.append("content", content || "");
+      body.append("file", file);
+      res = await api.post(`/backlog/${backlogbox_id}`, body, {
+        withCredentials: true,
+        // No Content-Type header — axios sets multipart boundary automatically
+      });
+    } else {
+      res = await api.post(
+        `/backlog/${backlogbox_id}`,
+        { content },
+        { withCredentials: true }
+      );
     }
-    if (data && (data.messages || data.backlogbox_id)) {
-      return data;
-    }
-
-    
-  }catch(Error){
-      throw new Error("Le serveur a renvoyé un format de réponse invalide.");
+    return res.data.data;
+  } catch (error) {
+    const errorMsg = error.response?.data?.error || error.message || "Erreur envoi message";
+    throw new Error(errorMsg);
   }
 };
-
 //get all backlogboxes 
 export const fetchbacklogboxs = async () => {
 

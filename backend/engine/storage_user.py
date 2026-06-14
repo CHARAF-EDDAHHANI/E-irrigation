@@ -1,129 +1,115 @@
 """
-storage layer :
-persist users
-retrieve users by id/email
-update / delete users
+storage_user.py
+_______________
+Storage layer — User CRUD on Supabase PostgreSQL (SQLAlchemy)
 
-future immigration to :
-MYSQL (SQLAlchemy)
+Public function signatures identical to JSON version — routes never change.
 """
 
-import json
-from pathlib import Path
 from typing import Optional, List
+from engine.extensions import db
+from engine.db_user import UserDB
 from models.user import User
 
-#------File Path------
-DB_DIR= Path(__file__).parent.parent / "db"
-DB_FILE = DB_DIR / "user.json"
 
-#-----Internal Helper-----
-def _load() -> List[dict]:
-    """load all users from json file"""
-    DB_DIR.mkdir(parents=True, exist_ok=True)
+# ── HELPERS ───────────────────────────────────────────────────────────────────
 
-    if not DB_FILE.exists():
-        DB_FILE.write_text("[]", encoding="utf-8")
-        return []
+def _to_user(row: UserDB) -> User:
+    """Convert SQLAlchemy row → User model object."""
+    return User.from_dict(row.to_dict(hide_password=False))
 
-    try:
-        return json.loads(DB_FILE.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return []
 
-def _dump(data: List[dict]) -> None:
-    """write users list to json file"""
-    DB_DIR.mkdir(parents=True, exist_ok=True)
-
-    DB_FILE.write_text(
-        json.dumps(data, indent=2, ensure_ascii=False),
-        encoding="utf-8"
-    )
-
-#-----Core Ops-----
+# ── CREATE / UPDATE ───────────────────────────────────────────────────────────
 
 def save_user(user: User) -> User:
-    """save or update a user upsert """
+    """Save or update a user (upsert)."""
+    existing = UserDB.query.filter_by(user_id=user.user_id).first()
 
-    users = _load()
-    user_dict = user.to_dict(hide_password=False)
+    if existing:
+        existing.fullName   = user.fullName
+        existing.email      = user.email
+        existing.password   = user.password
+        existing.role       = user.role
+        existing.phone      = user.phone
+        existing.national_id = user.national_id
+    else:
+        existing = UserDB(
+            user_id     = user.user_id,
+            fullName    = user.fullName,
+            email       = user.email,
+            password    = user.password,
+            role        = user.role,
+            phone       = user.phone,
+            national_id = user.national_id,
+        )
+        db.session.add(existing)
 
-    for i, u in enumerate(users):
-        if u.get("user_id") == user.user_id:
-            users[i] = user_dict
-            _dump(users)
-            return user
-    
-    # new user
-    users.append(user_dict)
-    _dump(users)
-    return  user
+    db.session.commit()
+    return user
+
+
+# ── READ ──────────────────────────────────────────────────────────────────────
 
 def get_all_users() -> List[User]:
-    """retrun all users as User object"""
-    return [User.from_dict(u) for u in _load()]
+    rows = UserDB.query.order_by(UserDB.created_at.desc()).all()
+    return [_to_user(row) for row in rows]
 
-def get_user_by_id(user_id: str):
-    """return user by Id """
-    for u in _load():
-        if u.get("user_id") == user_id:
-            return User.from_dict(u)
-    return None
 
-def get_user_by_email(email:str) -> Optional[User]:
-    """retrun user by Email"""
+def get_user_by_id(user_id: str) -> Optional[User]:
+    row = UserDB.query.filter_by(user_id=user_id).first()
+    return _to_user(row) if row else None
+
+
+def get_user_by_email(email: str) -> Optional[User]:
     email = email.lower().strip()
+    row = UserDB.query.filter(
+        db.func.lower(UserDB.email) == email
+    ).first()
+    return _to_user(row) if row else None
 
-    for u in _load():
-        if u.get("email","").lower().strip() == email:
-            return User.from_dict(u)
-    return None
 
 def get_user_by_phone(phone: str) -> Optional[User]:
-    """return user by phone"""
     phone = phone.strip()
-    for u in _load():
-        if u.get("phone", "").strip() == phone:
-            return User.from_dict(u)
-    return None
-    
+    row = UserDB.query.filter_by(phone=phone).first()
+    return _to_user(row) if row else None
+
+
 def get_user_by_national_id(national_id: str) -> Optional[User]:
-    """Retourne un utilisateur via son identifiant national (CIN/ID unique)"""
     if not national_id:
         return None
-        
-    national_id = national_id.upper().strip() # Standardisation en majuscules
-
-    for u in _load():
-        # On vérifie si le champ existe dans le dictionnaire de l'utilisateur
-        if u.get("national_id", "").upper().strip() == national_id:
-            return User.from_dict(u)
-            
-    return None
+    national_id = national_id.upper().strip()
+    row = UserDB.query.filter(
+        db.func.upper(UserDB.national_id) == national_id
+    ).first()
+    return _to_user(row) if row else None
 
 
-def delete_user(user_id:str) -> bool:
-    """true -> delete || false -> none"""
-    users = _load()
-    new_users = [u for u in users if u.get("user_id") != user_id]
-
-    if len(new_users) == len(users):
-        return False
-
-    _dump(new_users)
-    return True
+# ── UPDATE ────────────────────────────────────────────────────────────────────
 
 def update_user(user_id: str, **fields) -> Optional[User]:
-    users = _load()
-    for i, u in enumerate(users):
-        if u.get("user_id") == user_id:
-            user_obj = User.from_dict(u)
-            user_obj.update(**fields)
+    row = UserDB.query.filter_by(user_id=user_id).first()
+    if not row:
+        return None
 
-            users[i] = user_obj.to_dict(hide_password=False)
+    user_obj = _to_user(row)
+    user_obj.update(**fields)
 
-            _dump(users)
-            return User.from_dict(users[i])
+    updated = user_obj.to_dict(hide_password=False)
+    for key, value in updated.items():
+        if hasattr(row, key):
+            setattr(row, key, value)
+
+    db.session.commit()
+    return _to_user(row)
 
 
-    return None
+# ── DELETE ────────────────────────────────────────────────────────────────────
+
+def delete_user(user_id: str) -> bool:
+    row = UserDB.query.filter_by(user_id=user_id).first()
+    if not row:
+        return False
+
+    db.session.delete(row)
+    db.session.commit()
+    return True

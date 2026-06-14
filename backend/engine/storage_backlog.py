@@ -1,90 +1,98 @@
-import json
-from pathlib import Path
+"""
+storage_backlog.py
+__________________
+Storage layer — BacklogBox CRUD on Supabase PostgreSQL (SQLAlchemy)
+Supports embedded messages array with optional file attachments.
+
+Public function signatures identical to JSON version — routes never change.
+"""
+
 from typing import Optional, List, Dict
+from datetime import datetime, timezone
+from sqlalchemy.orm.attributes import flag_modified
+
+from engine.extensions import db, supabase
+from engine.db_backlog import BacklogBoxDB
 from models.backlog_box import BacklogBox
+import uuid
 
-# ------ System File Paths Definitions ------
-DB_DIR = Path(__file__).parent.parent / "db"
-DB_FILE = DB_DIR / "backlog_boxes.json"
 
-# ----- Internal Low-Level Storage Helpers -----
-def _load() -> List[Dict]:
-    """Reads and parses raw records directly out of the JSON storage file."""
-    DB_DIR.mkdir(parents=True, exist_ok=True)
+# ── HELPERS ───────────────────────────────────────────────────────────────────
 
-    if not DB_FILE.exists():
-        DB_FILE.write_text("[]", encoding="utf-8")
-        return []
+def _now():
+    return datetime.now(timezone.utc)
 
-    try:
-        return json.loads(DB_FILE.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return []
 
-def _dump(data: List[Dict]) -> None:
-    """Writes absolute operational arrays back down inside the local storage safely."""
-    DB_DIR.mkdir(parents=True, exist_ok=True)
-    DB_FILE.write_text(
-        json.dumps(data, indent=2, ensure_ascii=False),
-        encoding="utf-8"
+def _to_box(row: BacklogBoxDB) -> BacklogBox:
+    """Convert SQLAlchemy row → BacklogBox model object."""
+    return BacklogBox.from_dict(row.to_dict())
+
+
+# ── FILE UPLOAD ───────────────────────────────────────────────────────────────
+
+def upload_message_file(file, backlogbox_id: str) -> dict:
+    """
+    Upload a file to Supabase Storage inside backlog/ folder.
+    Returns dict with file_url and file_name.
+    """
+    filename  = f"backlog/{backlogbox_id}/{uuid.uuid4()}_{file.filename}"
+    file_bytes = file.read()
+
+    supabase.storage.from_("documents").upload(
+        path=filename,
+        file=file_bytes,
+        file_options={"content-type": file.content_type or "application/octet-stream"}
     )
 
-# ----- Core Strategic CRUD Operations -----
+    url = supabase.storage.from_("documents").get_public_url(filename)
+
+    return {
+        "file_url":  url,
+        "file_name": file.filename,
+    }
+
+
+# ── CREATE / UPDATE ───────────────────────────────────────────────────────────
 
 def save_backlogbox(box: BacklogBox) -> BacklogBox:
-    """
-    Executes an atomic write loop (Upsert operation).
-    Replaces existing blocks when active chats append fresh items.
-    """
-    boxes = _load()
-    box_dict = box.to_dict()
+    """Atomic upsert — replaces existing box or inserts new one."""
+    existing = BacklogBoxDB.query.filter_by(backlogbox_id=box.backlogbox_id).first()
 
-    for i, b in enumerate(boxes):
-        if b.get("backlogbox_id") == box.backlogbox_id:
-            boxes[i] = box_dict
-            _dump(boxes)
-            return box
-    
-    # Registering a newly initialized box inside the collection array
-    boxes.append(box_dict)
-    _dump(boxes)
+    if existing:
+        existing.messages  = box.messages
+        existing.updated_at = _now()
+        # Tell SQLAlchemy the JSON column changed
+        flag_modified(existing, "messages")
+    else:
+        existing = BacklogBoxDB(
+            backlogbox_id = box.backlogbox_id,
+            folder_id     = box.folder_id,
+            created_by    = box.created_by,
+            company_id    = box.company_id,
+            messages      = box.messages,
+        )
+        db.session.add(existing)
+
+    db.session.commit()
     return box
 
+
+# ── READ ──────────────────────────────────────────────────────────────────────
+
 def get_backlogbox_by_folder(folder_id: str) -> Optional[BacklogBox]:
-    """
-    Queries and extracts the unconstrained chat object referencing a targeted folder.
-    Returns 100% of historical sub-data chains unstripped.
-    """
     if not folder_id:
         return None
+    row = BacklogBoxDB.query.filter_by(folder_id=folder_id).first()
+    return _to_box(row) if row else None
 
-    for b in _load():
-        if b.get("folder_id") == folder_id:
-            return BacklogBox.from_dict(b)
-            
-    return None
 
-# get the backlogbox by id 
 def get_backlogbox_by_id(backlogbox_id: str) -> Optional[BacklogBox]:
-    """
-    Queries and extracts the unconstrained chat object referencing a targeted box using its id.
-    Returns 100% of historical sub-data chains unstripped.
-    """
     if not backlogbox_id:
         return None
+    row = BacklogBoxDB.query.filter_by(backlogbox_id=backlogbox_id).first()
+    return _to_box(row) if row else None
 
-    # On charge la liste et on cherche la boîte correspondante
-    for b in _load():
-        if b.get("backlogbox_id") == backlogbox_id:
-            return BacklogBox.from_dict(b)
-            
-    return None
 
-#all bcaklogs by currentuserid
 def get_all_backlogboxes() -> List[Dict]:
-    """
-    Public helper to retrieve the entire raw collection of backlog boxes.
-    Keeps the low-level _load() helper encapsulated.
-    """
-    return _load()
-
+    rows = BacklogBoxDB.query.order_by(BacklogBoxDB.created_at.desc()).all()
+    return [row.to_dict() for row in rows]
