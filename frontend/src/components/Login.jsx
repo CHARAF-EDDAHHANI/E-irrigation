@@ -137,7 +137,7 @@ export default function Login({ onSuccess }) {
              {/* LOGO MARK */}
             <Box
               component="img"
-              src="/public/logonv.png"
+              src="/logonv.png"
               alt="Logo"
               sx={{
                 width: 80,
