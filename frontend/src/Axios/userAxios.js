@@ -4,6 +4,7 @@ import api from './api';
 export const Auth = async () => {
     try{
         const response= await api.get("/auth/me");
+        console.log(response);
         return response.data;
     } catch (error){
         throw new Error("session indisponible reconnectez vous de nouveau");

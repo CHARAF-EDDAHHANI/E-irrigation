@@ -21,3 +21,17 @@ class DocumentDB(db.Model):
             "uploaded_by": self.uploaded_by,
             "uploaded_at": self.uploaded_at.isoformat() if self.uploaded_at else None,
         }
+
+
+# ── FUNCTION TO DELETE BY FOLDER ID ───────────────────────────────────────────
+def delete_documents_by_folder_id(folder_id: str) -> bool:
+    """Supprime tous les documents liés à un folder_id spécifique."""
+    try:
+        db.session.query(DocumentDB).filter(DocumentDB.folder_id == folder_id).delete()
+        db.session.commit()
+        return True
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erreur lors de la suppression des documents : {e}")
+        return False

@@ -74,13 +74,13 @@ def delete_conception(conception_id: str) -> bool:
     db.session.commit()
     return True
 
-
-def delete_conceptions_by_folder(folder_id: str) -> int:
-    rows = ConceptionDB.query.filter_by(folder_id=folder_id).all()
-    count = len(rows)
-    if count == 0:
-        return 0
-    for row in rows:
-        db.session.delete(row)
-    db.session.commit()
-    return count
+def delete_conceptions_by_folder_id(folder_id: str) -> bool:
+    """delete conception based on flder_id."""
+    try:
+        db.session.query(ConceptionDB).filter(ConceptionDB.folder_id == folder_id).delete()
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erreur lors de la suppression des conceptions : {e}")
+        return False

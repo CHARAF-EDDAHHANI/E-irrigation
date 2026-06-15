@@ -14,10 +14,12 @@ import {
 import { alpha } from "@mui/material/styles";
 import { checkConceptionByFolder } from "../Axios/conceptionAxios";
 import ChatDrawer from "./ChatDrawer";
+import { deleteFolderAxios } from "../Axios/folderAxios";
 
 const T = {
   bg: "#f8fafc", surface: "#ffffff", border: "#e2e8f0",
   green: "#16a34a", greenDk: "#14532d", greenLt: "#f0fdf4", greenBd: "#bbf7d0",
+  red: "#ef4444", redDk: "#b91c1c", redLt: "#fef2f2",
   text: "#0f172a", sub: "#475569", muted: "#64696f",
 };
 
@@ -34,12 +36,14 @@ const fmt      = (v, suffix = "") => (v !== undefined && v !== null && v !== "" 
 const fmtDate  = (d) => { try { return new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" }); } catch { return "—"; } };
 
 export default function FolderDetail({ folder, onBack, onLaunchConception, onViewConception, currentUser }) {
-  console.log(folder);
+    console.log("Rôle de l'utilisateur actuel :", currentUser?.role, currentUser);
+
   if (!folder) return null;
 
   const phase = getPhase(folder.phase);
   const [hasConception, setHasConception] = useState(null);
   const [openChat,      setOpenChat]      = useState(false);
+  const [isDeleting,    setIsDeleting]    = useState(false);
 
   useEffect(() => {
     if (!folder?.folder_id) return;
@@ -51,6 +55,23 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
   // documents is now an array of { doc_id, file_name, file_url, ... }
   const documents = Array.isArray(folder.documents) ? folder.documents : [];
 
+  //Deleting handler
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Êtes-vous sûr de vouloir supprimer ce dossier ainsi que tous ses documents, conceptions et backlogs ? Cette action est irréversible.");
+    if (!confirmDelete) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteFolderAxios(folder.folder_id);
+      alert("Dossier supprimé avec succès.");
+      onBack(); // Retourne à la liste des dossiers après la suppression
+    } catch (error) {
+      alert(error.message || "Une erreur est survenue lors de la suppression.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <Box sx={{ p: { xs: 2, md: 3 }, minHeight: "100vh", bgcolor: T.bg, fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
 
@@ -59,9 +80,38 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
         <IconButton onClick={onBack} size="small" sx={{ width: 34, height: 34, borderRadius: "8px", border: `0.5px solid ${T.border}`, bgcolor: T.surface, "&:hover": { bgcolor: T.bg } }}>
           <ArrowBack sx={{ fontSize: 18, color: T.sub }} />
         </IconButton>
-        <Box>
+        <Box sx={{display:"flex", py: 2, gap: 25,justifyItems:"center"}}>
+          <Box>
           <Typography sx={{ fontSize: 18, fontWeight: 500, color: T.text, lineHeight: 1 }}>Détail du dossier</Typography>
           <Typography sx={{ fontSize: 12, color: T.muted, mt: "3px" }}>Fiche complète — informations et financement</Typography>
+        </Box>
+        {/* ── BOUTON SUPPRESSION (ADMIN ONLY) ─────────────────────────────────── */}
+          <Box>
+          {currentUser?.role === "admin" && (
+            <button 
+              onClick={handleDelete} 
+              disabled={isDeleting}
+              style={{ 
+                backgroundColor: isDeleting ? T.muted : T.red, 
+                color: "white", 
+                marginLeft: "10px",
+                padding: "8px 16px",
+                border: "none",
+                borderRadius: "8px",
+                fontSize: "13px",
+                fontWeight: "600",
+                cursor: isDeleting ? "not-allowed" : "pointer",
+                transition: "background-color 0.2s ease",
+                boxShadow: "0 2px 4px rgba(239, 68, 68, 0.15)",
+              }}
+              onMouseEnter={(e) => { if(!isDeleting) e.currentTarget.style.backgroundColor = T.redDk; }}
+              onMouseLeave={(e) => { if(!isDeleting) e.currentTarget.style.backgroundColor = T.red; }}
+            >
+              {isDeleting ? "Suppression..." : "Supprimer le dossier"}
+            </button>
+          )}
+          </Box>
+
         </Box>
       </Stack>
 

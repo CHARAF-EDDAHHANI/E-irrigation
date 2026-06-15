@@ -133,29 +133,21 @@ export default function Login({ onSuccess }) {
         <Box sx={{ px: 4, pt: 4, pb: 4 }}>
 
           {/* LOGO MARK */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 4 }}>
-            <Box sx={{
-              width: 40, height: 40,
-              borderRadius: "12px",
-              background: `linear-gradient(135deg, ${G.dark}, ${G.mid})`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: `0 4px 14px ${alpha(G.mid, 0.35)}`,
-            }}>
-              <Box component="span" sx={{
-                width: 18, height: 18,
-                border: "2.5px solid white",
-                borderRadius: "50%",
-                display: "flex", alignItems: "center", justifyContent: "center",
-              }}>
-                <Box sx={{ width: 6, height: 6, bgcolor: "white", borderRadius: "50%" }} />
-              </Box>
-            </Box>
+          <Box sx={{ display: "grid", jsutifyContent:"grid", justifyItems: "center", alignItems: "center", gap: 1.5, mb: 3 }}>
+             {/* LOGO MARK */}
+            <Box
+              component="img"
+              src="/public/logonv.png"
+              alt="Logo"
+              sx={{
+                width: 80,
+                height: 80,
+                objectFit: "contain",
+              }}
+            />
             <Box>
-              <Typography sx={{ fontSize: 15, fontWeight: 800, color: G.text, lineHeight: 1 }}>
-                ORMVAM
-              </Typography>
-              <Typography sx={{ fontSize: 11, color: G.muted, letterSpacing: "0.08em", textTransform: "uppercase", mt: "1px" }}>
-                Irrigation System
+              <Typography sx={{ fontSize: 15, fontWeight: 800, color: G.dark, letterSpacing: "0.08em", textTransform: "uppercase", }}>
+                Systeme de Gestion
               </Typography>
             </Box>
           </Box>
@@ -314,3 +306,4 @@ export default function Login({ onSuccess }) {
     </Box>
   );
 }
+              

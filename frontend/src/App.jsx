@@ -37,11 +37,11 @@ export default function App() {
     const checkAuth = async () => {
       try {
         const data = await Auth();
+        console.log(data);
         setUser(data);
       } catch (error) {
         setUser(null);
       } finally {
-        // Subtle delay placeholder can be removed, but ensures fluid layout exit
         setLoading(false);
       }
     };

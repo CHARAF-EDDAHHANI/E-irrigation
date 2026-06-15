@@ -96,3 +96,14 @@ def get_backlogbox_by_id(backlogbox_id: str) -> Optional[BacklogBox]:
 def get_all_backlogboxes() -> List[Dict]:
     rows = BacklogBoxDB.query.order_by(BacklogBoxDB.created_at.desc()).all()
     return [row.to_dict() for row in rows]
+
+def delete_backlogs_by_folder_id(folder_id: str) -> bool:
+    """delete all backlogboxs based on folder_id."""
+    try:
+        db.session.query(BacklogBoxDB).filter(BacklogBoxDB.folder_id == folder_id).delete()
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erreur lors de la suppression des backlogs : {e}")
+        return False

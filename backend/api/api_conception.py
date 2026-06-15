@@ -8,7 +8,7 @@ from engine.storage_conception import (
     get_conception_by_id,
     get_conceptions_by_folder,
     delete_conception,
-    delete_conceptions_by_folder,
+    delete_conceptions_by_folder_id,
 )
 
 api_conception = Blueprint("api_conception", __name__, url_prefix="/api")

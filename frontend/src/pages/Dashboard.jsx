@@ -15,7 +15,7 @@ import Processus from "../components/Processus";
 import { fetchFolderById } from "../Axios/folderAxios";
 import { fetchConceptionByFolder } from "../Axios/conceptionAxios";
 
-export default function Dashboard() {
+export default function Dashboard({user}) {
   const [currentPage,    setCurrentPage]    = useState("dashboard");
   const [viewMode,       setViewMode]       = useState("list");
   const [selectedFolder, setSelectedFolder] = useState(null);
@@ -83,6 +83,7 @@ export default function Dashboard() {
                   onBack={handleBack}
                   onLaunchConception={handleLaunchConception}
                   onViewConception={handleViewConception}
+                  currentUser={user}
                 />
               )}
             </>

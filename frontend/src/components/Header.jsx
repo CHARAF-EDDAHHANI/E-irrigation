@@ -6,16 +6,29 @@ export default function Header() {
       sx={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center", // <-- Changé ici pour tout centrer au milieu
+        justifyContent: "center",
         px: 2.5,
         py: 1,
         borderBottom: "0.5px solid #e2e8f0",
         bgcolor: "#fff",
+        gap: 3
       }}
     >
       {/* CENTER — logos + app name */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-     {/* App name styled as logo */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2}}>
+
+        {/* Official logo */}
+        <Box
+          component="img"
+          src="/logonv.png"
+          alt="ORMVAM"
+          sx={{ height: 60, width: "auto", objectFit: "contain" }}
+        />
+      </Box>
+      
+       {/* Divider */}
+        <Box sx={{ width: "2px", height: 40, bgcolor: "#e2e8f0" }} />
+      {/* App name styled as logo */}
         <Box sx={{ display: "flex", alignItems: "baseline", gap: "3px" }}>
           <Typography
             sx={{
@@ -33,17 +46,6 @@ export default function Header() {
             E-Irrigation
           </Typography>
         </Box>
-
-        {/* Divider */}
-        <Box sx={{ width: "2px", height: 40, bgcolor: "#e2e8f0" }} />
-        {/* Official logo */}
-        <Box
-          component="img"
-          src="/logooff.png"
-          alt="ORMVAM"
-          sx={{ height: 60, width: "auto", objectFit: "contain" }}
-        />
-      </Box>
     </Box>
   );
 }

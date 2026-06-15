@@ -5,7 +5,6 @@ Folder API — Flask Blueprint registered in server.py
 """
 
 from flask import Blueprint, request, jsonify
-
 from models.folder import Folder
 from engine.storage_folder import (
     save_folder,
@@ -19,7 +18,9 @@ from engine.storage_folder import (
 from engine.storage_user import get_user_by_id
 from utils.auth import require_auth, get_current_user_object
 from engine.extensions import db, supabase
-from engine.db_document import DocumentDB
+from engine.db_document import DocumentDB, delete_documents_by_folder_id
+from engine.storage_conception import delete_conceptions_by_folder_id
+from engine.storage_backlog import delete_backlogs_by_folder_id
 import uuid
 import re
 import unicodedata
@@ -307,22 +308,34 @@ def update_folder_route(folder_id: str):
 @api_folder.route("/folders/<folder_id>", methods=["DELETE"])
 @require_auth
 def delete_folder_route(folder_id: str):
-    current_user = get_current_user_object()
+    try:
+        current_user = get_current_user_object()
 
-    err = _role_required(current_user)
-    if err:
-        return err
+        err = _role_required(current_user)
+        if err:
+            return err
 
-    existing = get_folder_by_id(folder_id)
-    if not existing:
-        return jsonify({"message": "Dossier introuvable."}), 404
+        # RBAC - only admin can Delete
+        if current_user.role != "admin":
+            return jsonify({"message": "Accès refusé. Seul l'administrateur peut supprimer des dossiers."}), 403
 
-    if current_user.role != "admin" and existing.created_by != current_user.user_id:
-        return jsonify({"message": "Accès refusé."}), 403
+        existing = get_folder_by_id(folder_id)
+        if not existing:
+            return jsonify({"message": "Dossier introuvable."}), 404
 
-    deleted = delete_folder(folder_id)
+        # ── Delete childs based on Foreign key <folder_id> ─────────────────────────────────────
+        delete_documents_by_folder_id(folder_id)
+        delete_conceptions_by_folder_id(folder_id)
+        delete_backlogs_by_folder_id(folder_id)
 
-    if not deleted:
-        return jsonify({"message": "Suppression échouée."}), 500
+        # ── Deelete parent based on <folder_id> ────────────────────────────────────────────
+        deleted = delete_folder(folder_id)
 
-    return jsonify({"message": "Dossier supprimé avec succès."}), 200
+        if not deleted:
+            return jsonify({"message": "Suppression échouée."}), 500
+
+        return jsonify({"message": "Dossier et tout son contenu supprimés avec succès."}), 200
+
+    except Exception as e:
+        # proper error handling
+        return jsonify({"message": "Une erreur interne est survenue.", "error": str(e)}), 500

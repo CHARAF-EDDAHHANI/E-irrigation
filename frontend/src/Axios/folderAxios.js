@@ -84,3 +84,17 @@ export const deleteFolderDocument = async (folder_id, doc_id) => {
     throw new Error(errorMsg);
   }
 };
+
+
+// ─── DELETE FOLDER (Includes admin check on backend) ──────────────────────────
+export const deleteFolderAxios = async (folder_id) => {
+  try {
+    const res = await api.delete(`/folders/${folder_id}`, {
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || error.message || "Erreur lors de la suppression du dossier";
+    throw new Error(errorMsg);
+  }
+};
