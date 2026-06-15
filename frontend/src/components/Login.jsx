@@ -147,7 +147,7 @@ export default function Login({ onSuccess }) {
             />
             <Box>
               <Typography sx={{ fontSize: 15, fontWeight: 800, color: G.dark, letterSpacing: "0.08em", textTransform: "uppercase", }}>
-                Systeme de Gestion
+                Système de Gestion
               </Typography>
             </Box>
           </Box>
