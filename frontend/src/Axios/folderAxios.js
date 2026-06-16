@@ -98,3 +98,15 @@ export const deleteFolderAxios = async (folder_id) => {
     throw new Error(errorMsg);
   }
 };
+
+// ─── UPDATE FOLDER DATA BY FOLDER_ID ──────────────────────────────────────────────────
+export const UpdateFolderAxios = async (folder_id, data) => {
+  try {
+    const res = await api.put(`/folders/${folder_id}`, data, {
+      withCredentials: true,
+    });
+    return res.data;
+  }catch (error) {
+    const errorMsg = error.response?.data?.message || error.message || "Erreur mise à jour du dossier. "
+  }
+}

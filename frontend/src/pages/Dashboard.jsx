@@ -73,10 +73,12 @@ export default function Dashboard({user}) {
           {/* DASHBOARD — folders list */}
           {currentPage === "dashboard" && (
             <>
+              {/* 1. EDIT VIEW */}
               {viewMode === "list" && (
                 <FoldersList onSelectFolder={handleSelectFolder} onFoldersLoaded={setFolders} />
 
               )}
+              {/* 2. EDIT VIEW */}
               {viewMode === "detail" && (
                 <FolderDetail
                   folder={selectedFolder}
@@ -84,6 +86,21 @@ export default function Dashboard({user}) {
                   onLaunchConception={handleLaunchConception}
                   onViewConception={handleViewConception}
                   currentUser={user}
+                  //pass function for edit mode:
+                  onStartEdit={() => setViewMode("edit")}
+                />
+              )}
+              {/* 3. EDIT VIEW */}
+              {viewMode === "edit" && (
+              <CreateFolder
+                editFolder={selectedFolder}
+                onCreate={(updated) => {
+                  // 1. RETURN TO DETAIL VIEW
+                  setViewMode("detail");
+                  // 2. UPDATE DATA OF SELECTED FOLDER
+                  setSelectedFolder(updated);
+                }}
+                onCancel={() => setViewMode("detail")}
                 />
               )}
             </>
@@ -117,7 +134,6 @@ export default function Dashboard({user}) {
           
           {/*  backlogs */}
           {currentPage === "messagerie" && (
-            /* ÉTAPE C : On passe enfin la liste des dossiers à votre messagerie */
             <Allbacklogboxs folders={folders} />
           )}
 

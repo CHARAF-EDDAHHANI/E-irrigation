@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Box, Button, Paper, Chip, CircularProgress, InputAdornment, LinearProgress, MenuItem, Snackbar, Alert, Stack, TextField, Typography } from "@mui/material";
 import { Agriculture, Article, AttachMoney, CheckCircle, FolderOpen, Person, Save, UploadFile, Phone } from "@mui/icons-material";
 import { alpha } from "@mui/material/styles";
-import { CreateFolderAxios, UpdateFolderAxios } from "../Axios/folderAxios";
+import { CreateFolderAxios } from "../Axios/folderAxios";
 
 const T = {
   green: "#16803c", greenBg: "#f0fdf4", greenBorder: "#86efac", greenLt: "#f0fdf4", greenBd: "#86efac", greenDk: "#14532d",
   blue: "#2563eb", blueBg: "#eff6ff",
-  amber: "#d97706", amberBg: "#fffbeb", amberDr: "#ef9c2f",
+  amber: "#d97706", amberBg: "#fffbeb",
   bg: "#f8fafc", surface: "#ffffff", border: "#e2e8f0",
   text: "#0f172a", textSub: "#475569", sub: "#475569", muted: "#1a1919",
   error: "#dc2626", errorBg: "#fef2f2"
@@ -65,28 +65,9 @@ const validate = (f) => {
 
 const pct = (f) => Math.round((Object.values(f).filter(v => v !== "").length / Object.keys(f).length) * 100);
 
-export default function CreateFolder({ onCreate, editFolder = null, onCancel }) {
-  const isEdit = !!editFolder;
-
-  const [form, setForm] = useState(editFolder ? {
-      beneficiary_name:   editFolder.beneficiary_name  || "",
-      national_id:        editFolder.national_id        || "",
-      deposit_year:       editFolder.deposit_year       || "",
-      investment:         editFolder.investment         || "",
-      reimbursed_investment: editFolder.reimbursed_investment || "",
-      subsidy:            editFolder.subsidy            || "",
-      phase:              editFolder.phase              || "",
-      company:            editFolder.company            || "",
-      company_phone:      editFolder.company_phone      || "",
-      crop:               editFolder.crop               || "",
-      comment:            editFolder.comment            || "",
-      serial_number_saba: editFolder.serial_number_saba || "",
-      ct_cda_cmv:         editFolder.ct_cda_cvm         || "",
-      adress:             editFolder.adress             || "",
-      adress_corr:        editFolder.adress_corr        || "",
-      area_brut:          editFolder.area_brut          || "",
-      area_net:           editFolder.area_net           || "",
-    } : INIT);  const [errors, setErrors] = useState({});
+export default function CreateFolder({ onCreate }) {
+  const [form, setForm]     = useState(INIT);
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [snack, setSnack]   = useState({ open: false, message: "", severity: "success" });
   const [files, setFiles]   = useState([]);
@@ -116,17 +97,13 @@ export default function CreateFolder({ onCreate, editFolder = null, onCancel }) 
       console.log(body);
       Object.entries(form).forEach(([key, val]) => body.append(key, val));
       files.forEach(file => body.append("files", file));
-
-      let result;
-      if(isEdit) {
-        result =await UpdateFolderAxios(editFolder.folder_id, form);
-      } else {
-        result = await CreateFolderAxios(body);
-      }
-
-      onCreate?.(result);
-      setSnack({ open: true, message: isEdit ? "Dossier mis a jour avec succès " : "Dossier créé avec succès.", severity: "success" });
-      if (!isEdit) { setForm(INIT); setFiles([]); }
+      console.log(body);
+      const created = await CreateFolderAxios(body);
+      console.log(body);
+      onCreate?.(created);
+      setSnack({ open: true, message: "Dossier créé avec succès.", severity: "success" });
+      setForm(INIT);
+      setFiles([]);
       setErrors({});
     } catch (err) {
       setSnack({ open: true, message: err.message || "Erreur serveur.", severity: "error" });
@@ -145,9 +122,7 @@ export default function CreateFolder({ onCreate, editFolder = null, onCancel }) 
         {/* HEADER */}
         <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 2 }}>
           <Box>
-            <Typography sx={{ fontSize: 18, fontWeight: 500, color: T.text, lineHeight: 1 }}>
-              {isEdit ? "Modifier le dossier" : "Nouveau dossier"} 
-            </Typography>
+            <Typography sx={{ fontSize: 18, fontWeight: 500, color: T.text, lineHeight: 1 }}>Nouveau dossier</Typography>
             <Typography sx={{ fontSize: 12, color: T.muted, mt: "3px" }}>Gestion des projets d'irrigation</Typography>
           </Box>
           <Box sx={{ minWidth: 200 }}>
@@ -294,23 +269,6 @@ export default function CreateFolder({ onCreate, editFolder = null, onCancel }) 
                 </Stack>
               </Paper>
 
-            {/* BUTTONS CONTAINER */}
-            <Box sx={{ display: "flex", gap: 2, width: "100%", mb: hasErrors ? 2 : 0 }}>
-              
-              {/* CANCEL BUTTON - DISPLAY ONLY IF IN EDIT MODE */}
-                {isEdit && (
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    onClick={onCancel}
-                    disabled={loading}
-                    sx={{ height: 44, color:"white", borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 14, bgcolor: T.amber, boxShadow: "none", "&:hover": { bgcolor: T.amberDr, boxShadow: "none" } }}
-
-                  >
-                    Annuler
-                  </Button>
-                )}
-
               {/* SUBMIT */}
               <Button
                 fullWidth variant="contained"
@@ -318,9 +276,8 @@ export default function CreateFolder({ onCreate, editFolder = null, onCancel }) 
                 startIcon={loading ? <CircularProgress size={16} color="inherit" /> : <Save sx={{ fontSize: 16 }} />}
                 sx={{ height: 44, borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 14, bgcolor: T.green, boxShadow: "none", "&:hover": { bgcolor: T.greenDk, boxShadow: "none" } }}
               >
-                {loading ? "Mise à jour...": isEdit ? "Enregistrer" : "Créer le dossier"}
+                {loading ? "Création en cours..." : "Créer le dossier"}
               </Button>
-              </Box>
 
               {hasErrors && (
                 <Box sx={{ p: "10px 14px", borderRadius: "8px", border: `0.5px solid ${alpha(T.error, 0.35)}`, bgcolor: T.errorBg }}>

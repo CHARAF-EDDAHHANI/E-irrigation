@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CreateFolder from "./CreateFolder";
 import {
   Box, Typography, Chip, Paper,
   IconButton, Stack, Button, CircularProgress,
@@ -35,15 +36,14 @@ const getPhase = (p) => PHASE[p?.toLowerCase()] || { bg: "#f1f5f9", color: "#647
 const fmt      = (v, suffix = "") => (v !== undefined && v !== null && v !== "" ? `${v}${suffix}` : "—");
 const fmtDate  = (d) => { try { return new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" }); } catch { return "—"; } };
 
-export default function FolderDetail({ folder, onBack, onLaunchConception, onViewConception, currentUser }) {
-    console.log("Rôle de l'utilisateur actuel :", currentUser?.role, currentUser);
-
+export default function FolderDetail({ folder, onBack, onLaunchConception, onViewConception, currentUser, onStartEdit }) {
   if (!folder) return null;
 
   const phase = getPhase(folder.phase);
   const [hasConception, setHasConception] = useState(null);
-  const [openChat,      setOpenChat]      = useState(false);
-  const [isDeleting,    setIsDeleting]    = useState(false);
+  const [openChat,           setOpenChat] = useState(false);
+  const [isDeleting,       setIsDeleting] = useState(false);
+  const [editMode,           setEditMode] = useState(false);       
 
   useEffect(() => {
     if (!folder?.folder_id) return;
@@ -76,44 +76,75 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
     <Box sx={{ p: { xs: 2, md: 3 }, minHeight: "100vh", bgcolor: T.bg, fontFamily: "'DM Sans','Segoe UI',sans-serif" }}>
 
       {/* TOP BAR */}
-      <Stack direction="row" alignItems="center" spacing={1.5} mb={3}>
-        <IconButton onClick={onBack} size="small" sx={{ width: 34, height: 34, borderRadius: "8px", border: `0.5px solid ${T.border}`, bgcolor: T.surface, "&:hover": { bgcolor: T.bg } }}>
-          <ArrowBack sx={{ fontSize: 18, color: T.sub }} />
-        </IconButton>
-        <Box sx={{display:"flex", py: 2, gap: 25,justifyItems:"center"}}>
-          <Box>
-          <Typography sx={{ fontSize: 18, fontWeight: 500, color: T.text, lineHeight: 1 }}>Détail du dossier</Typography>
-          <Typography sx={{ fontSize: 12, color: T.muted, mt: "3px" }}>Fiche complète — informations et financement</Typography>
-        </Box>
-        {/* ── BOUTON SUPPRESSION (ADMIN ONLY) ─────────────────────────────────── */}
-          <Box>
-          {currentUser?.role === "admin" && (
-            <button 
-              onClick={handleDelete} 
-              disabled={isDeleting}
-              style={{ 
-                backgroundColor: isDeleting ? T.muted : T.red, 
-                color: "white", 
-                marginLeft: "10px",
-                padding: "8px 16px",
-                border: "none",
-                borderRadius: "8px",
-                fontSize: "13px",
-                fontWeight: "600",
-                cursor: isDeleting ? "not-allowed" : "pointer",
-                transition: "background-color 0.2s ease",
-                boxShadow: "0 2px 4px rgba(239, 68, 68, 0.15)",
-              }}
-              onMouseEnter={(e) => { if(!isDeleting) e.currentTarget.style.backgroundColor = T.redDk; }}
-              onMouseLeave={(e) => { if(!isDeleting) e.currentTarget.style.backgroundColor = T.red; }}
-            >
-              {isDeleting ? "Suppression..." : "Supprimer le dossier"}
-            </button>
-          )}
-          </Box>
+        <Stack direction="row" alignItems="center" spacing={1.5} mb={3}>
+          <IconButton onClick={onBack} size="small" sx={{ width: 34, height: 34, borderRadius: "8px", border: `0.5px solid ${T.border}`, bgcolor: T.surface, "&:hover": { bgcolor: T.bg } }}>
+            <ArrowBack sx={{ fontSize: 18, color: T.sub }} />
+          </IconButton>
+          
+          {/* FIXED: Changed justifyItems to alignItems for flex row alignment */}
+          <Box sx={{ display: "flex", py: 2, gap: 15, alignItems: "center" }}>
+            <Box>
+              <Typography sx={{ fontSize: 18, fontWeight: 500, color: T.text, lineHeight: 1 }}>Détail du dossier</Typography>
+              <Typography sx={{ fontSize: 12, color: T.muted, mt: "3px" }}>Fiche complète — informations et financement</Typography>
+            </Box>
 
-        </Box>
-      </Stack>
+            {/* DELETE BUTTON RBAC - ADMIN ONLY */}
+            <Box>
+              {currentUser?.role === "admin" && (
+                <button 
+                  onClick={handleDelete} 
+                  disabled={isDeleting}
+                  style={{ 
+                    backgroundColor: isDeleting ? T.muted : T.red, 
+                    color: "white", 
+                    marginLeft: "10px",
+                    padding: "8px 16px",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                    cursor: isDeleting ? "not-allowed" : "pointer",
+                    transition: "background-color 0.2s ease",
+                    boxShadow: "0 2px 4px rgba(239, 68, 68, 0.15)",
+                  }}
+                  onMouseEnter={(e) => { if(!isDeleting) e.currentTarget.style.backgroundColor = T.redDk; }}
+                  onMouseLeave={(e) => { if(!isDeleting) e.currentTarget.style.backgroundColor = T.red; }}
+                >
+                  {isDeleting ? "Suppression..." : "Supprimer"}
+                </button>
+              )}
+            </Box>
+
+            {/* EDIT BUTTON RBAC - ADMIN + AGENT + COMPANY */}
+            {/* FIXED: Removed duplicate nested Box wrappers */}
+            <Box>
+              {["admin", "agent", "company"].includes(currentUser?.role) && (
+                <button
+                  onClick={onStartEdit}
+                  style={{ 
+                    backgroundColor: T.green, 
+                    color: "white", 
+                    marginLeft: "10px",
+                    padding: "8px 16px",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "13px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease",
+                    boxShadow: "0 2px 4px rgba(34, 197, 94, 0.15)",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = T.greenDk; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = T.green; }}
+                >
+                  Modifier
+                </button>
+              )}
+            </Box>
+
+          </Box>
+        </Stack>
+
 
       {/* HERO */}
       <Paper elevation={0} sx={{ mb: 2, borderRadius: "12px", overflow: "hidden", border: `0.5px solid ${T.border}` }}>
