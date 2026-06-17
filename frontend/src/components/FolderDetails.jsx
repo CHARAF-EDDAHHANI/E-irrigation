@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import CreateFolder from "./CreateFolder";
 import {
   Box, Typography, Chip, Paper,
-  IconButton, Stack, Button, CircularProgress,
+  IconButton, Stack, Button, CircularProgress, Menu, MenuItem,
 } from "@mui/material";
 import {
   ArrowBack, FolderOutlined, AgricultureOutlined,
@@ -25,7 +25,6 @@ const T = {
 };
 
 const PHASE = {
-  prealable:  { bg: "#ffeaea", color: "#a65353", label: "Préalable"  },
   observation:{ bg: "#ffeeee", color: "#ff0909", label: "Observation"},
   validation: { bg: "#f8eeff", color: "#96199d", label: "Validation" },
   execution:  { bg: "#ecfffe", color: "#1e72e0", label: "Exécution"  },
@@ -43,6 +42,8 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
   const [hasConception, setHasConception] = useState(null);
   const [openChat,           setOpenChat] = useState(false);
   const [isDeleting,       setIsDeleting] = useState(false);
+  const [conceptionAnchorEl, setConceptionAnchorEl] = useState(null);
+  const openConceptionMenu = Boolean(conceptionAnchorEl);
 
   useEffect(() => {
     if (!folder?.folder_id) return;
@@ -167,19 +168,60 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
               sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, borderColor: T.border, color: T.muted, bgcolor: T.surface, "&:hover": { borderColor: T.green, color: T.green, bgcolor: T.greenLt }, transition: "all 0.15s" }}>
               Messages
             </Button>
-            {hasConception === null ? (
-              <CircularProgress size={18} sx={{ color: T.green }} />
-            ) : hasConception ? (
-              <Button size="small" variant="contained" startIcon={<VisibilityOutlined sx={{ fontSize: 15 }} />} onClick={() => onViewConception(folder.folder_id)}
-                sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: "#5197d9", boxShadow: "none", "&:hover": { bgcolor: "#0C447C", boxShadow: "none" } }}>
-                Conception
-              </Button>
-            ) : (
-              <Button size="small" variant="contained" startIcon={<RocketLaunchOutlined sx={{ fontSize: 15 }} />} onClick={() => onLaunchConception(folder.folder_id)}
-                sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: T.green, boxShadow: "none", "&:hover": { bgcolor: T.greenDk, boxShadow: "none" } }}>
-                Conception
-              </Button>
-            )}
+{/* CONCEPTION BUTTON WITH VIEW MODE SELECTION */}
+{hasConception === null ? (
+  <CircularProgress size={18} sx={{ color: T.green }} />
+) : hasConception ? (
+  <Box>
+    <Button 
+      size="small" 
+      variant="contained" 
+      startIcon={<VisibilityOutlined sx={{ fontSize: 15 }} />} 
+      onClick={(e) => setConceptionAnchorEl(e.currentTarget)} // Opens the dropdown menu cleanly
+      sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: "#5197d9", boxShadow: "none", "&:hover": { bgcolor: "#0C447C", boxShadow: "none" } }}
+    >
+      Conception
+    </Button>
+    
+    <Menu
+      anchorEl={conceptionAnchorEl}
+      open={openConceptionMenu}
+      onClose={() => setConceptionAnchorEl(null)}
+      PaperProps={{ sx: { borderRadius: "8px", mt: 0.5, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" } }}
+    >
+      <MenuItem 
+        onClick={() => { 
+          setConceptionAnchorEl(null); 
+          onViewConception(folder.folder_id, "table"); // Routes layout view to Table mode
+        }}
+        sx={{ fontSize: 13, color: T.text }}
+      >
+        Vue Tableau (Fiche Technique)
+      </MenuItem>
+      <MenuItem 
+        onClick={() => { 
+          setConceptionAnchorEl(null); 
+          onViewConception(folder.folder_id, "charts"); // Routes layout view to Charts mode
+        }}
+        sx={{ fontSize: 13, color: T.text }}
+      >
+        Vue Graphiques (Diagrammes)
+      </MenuItem>
+    </Menu>
+  </Box>
+) : (
+  <Button 
+    size="small" 
+    variant="contained" 
+    startIcon={<RocketLaunchOutlined sx={{ fontSize: 15 }} />} 
+    onClick={() => onLaunchConception(folder.folder_id)}
+    sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: T.green, boxShadow: "none", "&:hover": { bgcolor: T.greenDk, boxShadow: "none" } }}
+  >
+    Conception
+  </Button>
+)}
+
+
           </Stack>
         </Box>
       </Paper>

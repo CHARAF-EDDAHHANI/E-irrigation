@@ -8,9 +8,11 @@ import FolderDetail from "../components/FolderDetails";
 import CreateFolder from "../components/CreateFolder";
 import ConceptionInsert from "../components/ConceptionInsert";
 import ConceptionVision from "../components/ConceptionVision";
+import ConceptionVisionTab from "../components/ConceptionVisionTab"; 
 import CompteManager from "../components/CompteManager";
 import Allbacklogboxs from "../components/Allbacklogboxs";
 import Processus from "../components/Processus";
+
 
 import { fetchFolderById } from "../Axios/folderAxios";
 import { fetchConceptionByFolder } from "../Axios/conceptionAxios";
@@ -22,6 +24,8 @@ export default function Dashboard({ user }) {
   const [conceptionData, setConceptionData] = useState(null);
   const [activeFolderId, setActiveFolderId] = useState(null);
   const [folders,        setFolders]        = useState([]);
+  const [conceptionViewMode, setConceptionViewMode] = useState("table");
+
 
   // ── Fetch single folder details ──────────────────────────────────────────
   const handleSelectFolder = async (folder_id) => {
@@ -59,10 +63,11 @@ export default function Dashboard({ user }) {
   };
 
   // ── Navigation to view an existing conception ────────────────────────────
-  const handleViewConception = async (folder_id) => {
+  const handleViewConception = async (folder_id, mode="table") => {
     try {
       const data = await fetchConceptionByFolder(folder_id);
       setConceptionData(data);
+      setConceptionViewMode(mode);
       setCurrentPage("conception-vision");
     } catch (err) {
       console.error(err);
@@ -81,12 +86,12 @@ export default function Dashboard({ user }) {
           {/* DASHBOARD SYSTEM — CURRENT PAGE SUB-VIEWS */}
           {currentPage === "dashboard" && (
             <>
-              {/* 1. LIST VIEW */}
+              {/* 1. FOLDER-LIST VIEW */}
               {viewMode === "list" && (
                 <FoldersList onSelectFolder={handleSelectFolder} onFoldersLoaded={setFolders} />
               )}
               
-              {/* 2. DETAIL VIEW */}
+              {/* 2. FOLDER-DETAIL VIEW */}
               {viewMode === "detail" && (
                 <FolderDetail
                   folder={selectedFolder}
@@ -99,7 +104,7 @@ export default function Dashboard({ user }) {
                 />
               )}
               
-              {/* 3. EDIT VIEW */}
+              {/* 3. EDIT-MODE VIEW */}
               {viewMode === "edit" && (
                 <CreateFolder
                   editFolder={selectedFolder}
@@ -115,15 +120,18 @@ export default function Dashboard({ user }) {
             </>
           )}
 
-          {/* NAVIGATION APP ROUTING FOR OTHER APP VIEWS */}
+          {/* ACCOUNT-MANAGER VIEW */}
           {currentPage === "comptes" && <CompteManager />}
 
+          {/* ACCOUNT-MANAGER VIEW */}
           {currentPage === "folders" && (
             <FoldersList onSelectFolder={handleSelectFolder} onFoldersLoaded={setFolders} />
           )}
 
+          {/* CREATE NEW FOLDER VIEW */}
           {currentPage === "create-folder" && <CreateFolder />}
 
+          {/*INSERT CONCEPTION VIEW */}
           {currentPage === "conception-insert" && (
             <ConceptionInsert
               folderId={activeFolderId}
@@ -133,14 +141,25 @@ export default function Dashboard({ user }) {
             />
           )}
 
+          {/*VISUALISATION CONCEPTION VIEW */}
           {currentPage === "conception-vision" && (
-            <ConceptionVision
-              conceptionData={conceptionData}
-              folderId={activeFolderId}
-              setCurrentPage={setCurrentPage}
-            />
+            conceptionViewMode === "table" ? (
+              /* TABLE VIEW MODE */
+              <ConceptionVisionTab
+                conceptionData={conceptionData}
+                folderId={activeFolderId}
+                setCurrentPage={setCurrentPage}
+              />
+            ) : (
+              /* CHARTS DIAGRAMS VIEW MODE */
+              <ConceptionVision
+                conceptionData={conceptionData}
+                folderId={activeFolderId}
+                setCurrentPage={setCurrentPage}
+              />
+            )
           )}
-          
+
           {/* Backlog messaging subsystem */}
           {currentPage === "messagerie" && (
             <Allbacklogboxs folders={folders} />
