@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Dashboard from "./pages/Dashboard";
 import Login from "./components/Login";
 import { Auth } from "./Axios/userAxios";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, GlobalStyles} from "@mui/material";
 import { keyframes } from "@mui/system";
 
 // ── BRANDING DESIGN TOKENS ────────────────────────────────────────────────────
@@ -104,9 +104,13 @@ export default function App() {
   // ── IF NOT LOGGED IN ──
   if (!user) {
     return (
+      <>
+      <GlobalStyles styles={{ body: { margin: 0, padding: 0, boxSizing: "border-box" } }} />
+
       <Login onSuccess={(loggedUser) => {
         setUser(loggedUser);
       }} />
+      </>
     );
   }
 

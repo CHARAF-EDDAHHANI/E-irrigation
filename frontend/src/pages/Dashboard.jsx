@@ -15,17 +15,15 @@ import Processus from "../components/Processus";
 import { fetchFolderById } from "../Axios/folderAxios";
 import { fetchConceptionByFolder } from "../Axios/conceptionAxios";
 
-export default function Dashboard({user}) {
+export default function Dashboard({ user }) {
   const [currentPage,    setCurrentPage]    = useState("dashboard");
   const [viewMode,       setViewMode]       = useState("list");
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [conceptionData, setConceptionData] = useState(null);
   const [activeFolderId, setActiveFolderId] = useState(null);
-  
-  // ── ÉTAPE A : Stocker les dossiers au niveau global du Dashboard ──────────
-  const [folders, setFolders] = useState([]);
+  const [folders,        setFolders]        = useState([]);
 
-  // ── Open folder detail ────────────────────────────────────────────────────
+  // ── Fetch single folder details ──────────────────────────────────────────
   const handleSelectFolder = async (folder_id) => {
     try {
       const data = await fetchFolderById(folder_id);
@@ -37,20 +35,30 @@ export default function Dashboard({user}) {
     }
   };
 
-  // ── Back to list ──────────────────────────────────────────────────────────
+  // ── Refresh folder data after an update call ─────────────────────────────
+  const handleRefreshFolder = async (folder_id) => {
+    try {
+      const data = await fetchFolderById(folder_id);
+      setSelectedFolder(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  
+  // ── Back to folders list view ─────────────────────────────────────────────
   const handleBack = () => {
     setViewMode("list");
     setSelectedFolder(null);
     setActiveFolderId(null);
   };
 
-  // ── Launch Conception (no existing conception) ────────────────────────────
+  // ── Navigation to launch a new conception workflow ────────────────────────
   const handleLaunchConception = (folder_id) => {
     setActiveFolderId(folder_id);
     setCurrentPage("conception-insert");
   };
 
-  // ── View Conception (existing conception found) ───────────────────────────
+  // ── Navigation to view an existing conception ────────────────────────────
   const handleViewConception = async (folder_id) => {
     try {
       const data = await fetchConceptionByFolder(folder_id);
@@ -70,43 +78,44 @@ export default function Dashboard({user}) {
 
         <Box sx={{ flex: 1, overflowY: "auto" }}>
 
-          {/* DASHBOARD — folders list */}
+          {/* DASHBOARD SYSTEM — CURRENT PAGE SUB-VIEWS */}
           {currentPage === "dashboard" && (
             <>
-              {/* 1. EDIT VIEW */}
+              {/* 1. LIST VIEW */}
               {viewMode === "list" && (
                 <FoldersList onSelectFolder={handleSelectFolder} onFoldersLoaded={setFolders} />
-
               )}
-              {/* 2. EDIT VIEW */}
+              
+              {/* 2. DETAIL VIEW */}
               {viewMode === "detail" && (
                 <FolderDetail
                   folder={selectedFolder}
                   onBack={handleBack}
                   onLaunchConception={handleLaunchConception}
                   onViewConception={handleViewConception}
+                  onRefresh={handleRefreshFolder}
                   currentUser={user}
-                  //pass function for edit mode:
                   onStartEdit={() => setViewMode("edit")}
                 />
               )}
+              
               {/* 3. EDIT VIEW */}
               {viewMode === "edit" && (
-              <CreateFolder
-                editFolder={selectedFolder}
-                onCreate={(updated) => {
-                  // 1. RETURN TO DETAIL VIEW
-                  setViewMode("detail");
-                  // 2. UPDATE DATA OF SELECTED FOLDER
-                  setSelectedFolder(updated);
-                }}
-                onCancel={() => setViewMode("detail")}
+                <CreateFolder
+                  editFolder={selectedFolder}
+                  onCreate={async (updated) => {
+                    // Go back to details layout view
+                    setViewMode("detail");
+                    // Trigger API call to pull fresh server data for this folder
+                    await handleRefreshFolder(selectedFolder.folder_id);
+                  }}
+                  onCancel={() => setViewMode("detail")}
                 />
               )}
             </>
           )}
 
-          {/* OTHER PAGES */}
+          {/* NAVIGATION APP ROUTING FOR OTHER APP VIEWS */}
           {currentPage === "comptes" && <CompteManager />}
 
           {currentPage === "folders" && (
@@ -132,12 +141,12 @@ export default function Dashboard({user}) {
             />
           )}
           
-          {/*  backlogs */}
+          {/* Backlog messaging subsystem */}
           {currentPage === "messagerie" && (
             <Allbacklogboxs folders={folders} />
           )}
 
-          {/*  processus */}
+          {/* Process tracking system */}
           {currentPage === "processus" && <Processus />}
         </Box>
       </Box>

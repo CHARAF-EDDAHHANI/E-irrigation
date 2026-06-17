@@ -23,6 +23,7 @@ const T = {
 
 const PHASE = {
   prealable:  { bg: "#f3e8ff", color: "#7c3aed", label: "Préalable"  },
+  observation:{ bg: "#ffeed6", color: "#ff0909", label: "Observation"},
   validation: { bg: "#dbeafe", color: "#1d4ed8", label: "Validation" },
   execution:  { bg: "#fff7ed", color: "#c2410c", label: "Exécution"  },
   cloture:    { bg: "#dcfce7", color: "#15803d", label: "Clôture"    },

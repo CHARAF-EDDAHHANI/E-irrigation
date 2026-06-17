@@ -57,12 +57,12 @@ export const fetchFolderDocuments = async (folder_id) => {
   }
 };
 
-// ─── UPLOAD PDF TO EXISTING FOLDER ───────────────────────────────────────────
+
 export const uploadFolderDocument = async (folder_id, files) => {
   try {
     const body = new FormData();
     files.forEach(file => body.append("files", file));
-    const res = await api.post(`/folder/${folder_id}/upload`, body, {
+    const res = await api.post(`/folders/${folder_id}/upload`, body, {  // ← folders not folder
       withCredentials: true,
     });
     return res.data;

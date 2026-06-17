@@ -7,8 +7,8 @@ export default function Header() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        px: 2.5,
-        py: 1,
+       
+      
         borderBottom: "0.5px solid #e2e8f0",
         bgcolor: "#fff",
         gap: 3
@@ -40,7 +40,7 @@ export default function Header() {
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              lineHeight: 1,
+              lineHeight: 1.5,
             }}
           >
             E-Irrigation

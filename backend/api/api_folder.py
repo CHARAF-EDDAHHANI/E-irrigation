@@ -339,3 +339,49 @@ def delete_folder_route(folder_id: str):
     except Exception as e:
         # proper error handling
         return jsonify({"message": "Une erreur interne est survenue.", "error": str(e)}), 500
+
+# ── UPLOAD DOCUMENTS TO EXISTING FOLDER ───────────────────────────────────────
+@api_folder.route("/folders/<folder_id>/upload", methods=["POST"])
+@require_auth
+def upload_folder_documents(folder_id: str):
+    current_user = get_current_user_object()
+
+    err = _role_required(current_user)
+    if err:
+        return err
+
+    try:
+        folder = get_folder_by_id(folder_id)
+        if not folder:
+            return jsonify({"message": "Dossier introuvable."}), 404
+
+        files = request.files.getlist("files")
+        if not files:
+            return jsonify({"message": "Aucun fichier fourni."}), 400
+
+        uploaded = []
+        for file in files:
+            if file and file.filename:
+                safe_name  = _sanitize_filename(file.filename)
+                filename   = f"folders/{uuid.uuid4()}_{safe_name}"
+                file_bytes = file.read()
+                supabase.storage.from_("documents").upload(
+                    path=filename,
+                    file=file_bytes,
+                    file_options={"content-type": file.content_type or "application/pdf"}
+                )
+                url = supabase.storage.from_("documents").get_public_url(filename)
+                doc = DocumentDB(
+                    folder_id   = folder_id,
+                    file_name   = file.filename,
+                    file_url    = url,
+                    uploaded_by = current_user.user_id,
+                )
+                db.session.add(doc)
+                uploaded.append({"file_name": file.filename, "file_url": url})
+
+        db.session.commit()
+        return jsonify({"message": "Fichiers uploadés avec succès.", "documents": uploaded}), 201
+
+    except Exception as exc:
+        return jsonify({"message": f"Erreur upload : {exc}"}), 500

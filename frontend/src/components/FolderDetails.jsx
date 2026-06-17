@@ -21,12 +21,12 @@ const T = {
   bg: "#f8fafc", surface: "#ffffff", border: "#e2e8f0",
   green: "#16a34a", greenDk: "#14532d", greenLt: "#f0fdf4", greenBd: "#bbf7d0",
   red: "#ef4444", redDk: "#b91c1c", redLt: "#fef2f2",
-  text: "#0f172a", sub: "#475569", muted: "#64696f",
+  text: "#0b1b41", sub: "#1d1e20", muted: "#144684",
 };
 
 const PHASE = {
   prealable:   { bg: "#f3e8ff", color: "#7c3aed", label: "Préalable"  },
-  observation: { bg: "#f1f5f9", color: "#475569", label: "Observation" },
+  observation: { bg: "#f1f5f9", color: "#ff2929", label: "Observation" },
   validation:  { bg: "#dbeafe", color: "#1d4ed8", label: "Validation" },
   execution:   { bg: "#fff7ed", color: "#c2410c", label: "Exécution"  },
   cloture:     { bg: "#dcfce7", color: "#15803d", label: "Clôture"    },
@@ -36,14 +36,13 @@ const getPhase = (p) => PHASE[p?.toLowerCase()] || { bg: "#f1f5f9", color: "#647
 const fmt      = (v, suffix = "") => (v !== undefined && v !== null && v !== "" ? `${v}${suffix}` : "—");
 const fmtDate  = (d) => { try { return new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" }); } catch { return "—"; } };
 
-export default function FolderDetail({ folder, onBack, onLaunchConception, onViewConception, currentUser, onStartEdit }) {
+export default function FolderDetail({ folder, onBack, onLaunchConception, onViewConception, currentUser, onStartEdit, onRefresh }) {
   if (!folder) return null;
 
   const phase = getPhase(folder.phase);
   const [hasConception, setHasConception] = useState(null);
   const [openChat,           setOpenChat] = useState(false);
   const [isDeleting,       setIsDeleting] = useState(false);
-  const [editMode,           setEditMode] = useState(false);       
 
   useEffect(() => {
     if (!folder?.folder_id) return;
@@ -82,10 +81,35 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
           </IconButton>
           
           {/* FIXED: Changed justifyItems to alignItems for flex row alignment */}
-          <Box sx={{ display: "flex", py: 2, gap: 15, alignItems: "center" }}>
+          <Box sx={{ display: "flex", py: 1, gap: 15, alignItems: "center" }}>
             <Box>
               <Typography sx={{ fontSize: 18, fontWeight: 500, color: T.text, lineHeight: 1 }}>Détail du dossier</Typography>
               <Typography sx={{ fontSize: 12, color: T.muted, mt: "3px" }}>Fiche complète — informations et financement</Typography>
+            </Box>
+
+            {/* EDIT BUTTON RBAC - ADMIN + AGENT + COMPANY */}
+            <Box>
+              {["admin", "agent", "company"].includes(currentUser?.role) && (
+                <button
+                  onClick={onStartEdit}
+                  style={{ 
+                    backgroundColor: T.green, 
+                    color: "white", 
+                    padding: "8px 16px",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "13px",
+                    fontWeight: "550",
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease",
+                    boxShadow: "0 2px 4px rgba(34, 197, 94, 0.15)",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = T.greenDk; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = T.green; }}
+                >
+                  Modifier
+                </button>
+              )}
             </Box>
 
             {/* DELETE BUTTON RBAC - ADMIN ONLY */}
@@ -97,12 +121,11 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
                   style={{ 
                     backgroundColor: isDeleting ? T.muted : T.red, 
                     color: "white", 
-                    marginLeft: "10px",
-                    padding: "8px 16px",
+                    padding: "8px 10px",
                     border: "none",
                     borderRadius: "8px",
                     fontSize: "13px",
-                    fontWeight: "600",
+                    fontWeight: "550",
                     cursor: isDeleting ? "not-allowed" : "pointer",
                     transition: "background-color 0.2s ease",
                     boxShadow: "0 2px 4px rgba(239, 68, 68, 0.15)",
@@ -111,33 +134,6 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
                   onMouseLeave={(e) => { if(!isDeleting) e.currentTarget.style.backgroundColor = T.red; }}
                 >
                   {isDeleting ? "Suppression..." : "Supprimer"}
-                </button>
-              )}
-            </Box>
-
-            {/* EDIT BUTTON RBAC - ADMIN + AGENT + COMPANY */}
-            {/* FIXED: Removed duplicate nested Box wrappers */}
-            <Box>
-              {["admin", "agent", "company"].includes(currentUser?.role) && (
-                <button
-                  onClick={onStartEdit}
-                  style={{ 
-                    backgroundColor: T.green, 
-                    color: "white", 
-                    marginLeft: "10px",
-                    padding: "8px 16px",
-                    border: "none",
-                    borderRadius: "8px",
-                    fontSize: "13px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "background-color 0.2s ease",
-                    boxShadow: "0 2px 4px rgba(34, 197, 94, 0.15)",
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = T.greenDk; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = T.green; }}
-                >
-                  Modifier
                 </button>
               )}
             </Box>
@@ -157,7 +153,8 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
             <Box>
               <Typography sx={{ fontSize: 10, fontWeight: 500, color: T.muted, textTransform: "uppercase", letterSpacing: "0.08em", mb: "3px" }}>Identifiant dossier</Typography>
               <Typography sx={{ fontSize: 20, fontWeight: 500, color: T.text, lineHeight: 1 }}>{folder.folder_name}</Typography>
-              <Typography sx={{ fontSize: 13, color: T.sub, mt: "4px" }}>{folder.beneficiary_name}</Typography>
+              <Typography sx={{ fontSize: 13,  fontWeight: 550, color: T.muted, mt: "4px" }}>{folder.beneficiary_name} - {folder.company}</Typography>
+
             </Box>
           </Stack>
 

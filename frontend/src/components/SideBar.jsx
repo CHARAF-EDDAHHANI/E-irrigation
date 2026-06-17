@@ -46,12 +46,12 @@ export default function SideBar({ setCurrentPage, currentPage }) {
       borderRight: `1px solid ${T.border}`,
       display: "flex",
       flexDirection: "column",
-      pt: 3, pb: 3,
+      pt: 1, pb: 1,
       fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
     }}>
 
       {/* LOGO */}
-      <Box sx={{ px: 2.5, mb: 4, display: "flex", alignItems: "center", gap: 1.5 }}>
+      <Box sx={{ px: 2.5, mb: 2, display: "flex", alignItems: "center", gap: 1.5 }}>
         <Box sx={{
           width: 35, height: 35, borderRadius: "9px",
           background: `linear-gradient(135deg, ${T.greenDk}, ${T.green})`,
