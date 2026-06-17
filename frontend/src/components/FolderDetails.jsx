@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import CreateFolder from "./CreateFolder";
 import {
   Box, Typography, Chip, Paper,
-  IconButton, Stack, Button, CircularProgress, Menu, MenuItem,
+  IconButton, Stack, Button, CircularProgress, Menu, MenuItem, Divider
 } from "@mui/material";
 import {
   ArrowBack, FolderOutlined, AgricultureOutlined,
@@ -13,7 +13,7 @@ import {
   ChatBubbleOutlineRounded, FileDownloadOutlined,
 } from "@mui/icons-material";
 import { alpha } from "@mui/material/styles";
-import { checkConceptionByFolder } from "../Axios/conceptionAxios";
+import { checkConceptionByFolder, deleteConceptionByFolderAxios } from "../Axios/conceptionAxios";
 import ChatDrawer from "./ChatDrawer";
 import { deleteFolderAxios } from "../Axios/folderAxios";
 
@@ -168,63 +168,87 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
               sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, borderColor: T.border, color: T.muted, bgcolor: T.surface, "&:hover": { borderColor: T.green, color: T.green, bgcolor: T.greenLt }, transition: "all 0.15s" }}>
               Messages
             </Button>
-{/* CONCEPTION BUTTON WITH VIEW MODE SELECTION */}
-{hasConception === null ? (
-  <CircularProgress size={18} sx={{ color: T.green }} />
-) : hasConception ? (
-  <Box>
-    <Button 
-      size="small" 
-      variant="contained" 
-      startIcon={<VisibilityOutlined sx={{ fontSize: 15 }} />} 
-      onClick={(e) => setConceptionAnchorEl(e.currentTarget)} // Opens the dropdown menu cleanly
-      sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: "#5197d9", boxShadow: "none", "&:hover": { bgcolor: "#0C447C", boxShadow: "none" } }}
-    >
-      Conception
-    </Button>
-    
-    <Menu
-      anchorEl={conceptionAnchorEl}
-      open={openConceptionMenu}
-      onClose={() => setConceptionAnchorEl(null)}
-      PaperProps={{ sx: { borderRadius: "8px", mt: 0.5, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" } }}
-    >
-      <MenuItem 
-        onClick={() => { 
-          setConceptionAnchorEl(null); 
-          onViewConception(folder.folder_id, "table"); // Routes layout view to Table mode
-        }}
-        sx={{ fontSize: 13, color: T.text }}
-      >
-        Vue Tableau (Fiche Technique)
-      </MenuItem>
-      <MenuItem 
-        onClick={() => { 
-          setConceptionAnchorEl(null); 
-          onViewConception(folder.folder_id, "charts"); // Routes layout view to Charts mode
-        }}
-        sx={{ fontSize: 13, color: T.text }}
-      >
-        Vue Graphiques (Diagrammes)
-      </MenuItem>
-    </Menu>
-  </Box>
-) : (
-  <Button 
-    size="small" 
-    variant="contained" 
-    startIcon={<RocketLaunchOutlined sx={{ fontSize: 15 }} />} 
-    onClick={() => onLaunchConception(folder.folder_id)}
-    sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: T.green, boxShadow: "none", "&:hover": { bgcolor: T.greenDk, boxShadow: "none" } }}
-  >
-    Conception
-  </Button>
-)}
 
 
+
+          {/* CONCEPTION BUTTON WITH VIEW MODE SELECTION */}
+          {hasConception === null ? (
+            <CircularProgress size={18} sx={{ color: T.green }} />
+          ) : hasConception ? (
+            <Box>
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={<VisibilityOutlined sx={{ fontSize: 15 }} />}
+                onClick={(e) => setConceptionAnchorEl(e.currentTarget)}
+                sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: "#5197d9", boxShadow: "none", "&:hover": { bgcolor: "#0C447C", boxShadow: "none" } }}
+              >
+                Conception
+              </Button>
+
+              <Menu
+                anchorEl={conceptionAnchorEl}
+                open={openConceptionMenu}
+                onClose={() => setConceptionAnchorEl(null)}
+                PaperProps={{ sx: { borderRadius: "8px", mt: 0.5, boxShadow: "0 4px 12px rgba(0,0,0,0.1)", minWidth: 220 } }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    setConceptionAnchorEl(null);
+                    onViewConception(folder.folder_id, "table");
+                  }}
+                  sx={{ fontSize: 13, color: T.text }}
+                >
+                  Vue Tableau (Fiche Technique)
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setConceptionAnchorEl(null);
+                    onViewConception(folder.folder_id, "charts");
+                  }}
+                  sx={{ fontSize: 13, color: T.text }}
+                >
+                  Vue Graphiques (Diagrammes)
+                </MenuItem>
+
+                <Divider sx={{ my: 0.5 }} />
+                {/* DELETE CONCEPTION — admin only */}
+                {["admin", "agent", "company"].includes(currentUser?.role) && (
+                  <MenuItem
+                    onClick={async () => {
+                      setConceptionAnchorEl(null);
+                      const confirm = window.confirm("Supprimer la conception de ce dossier ? Cette action est irréversible.");
+                      if (!confirm) return;
+                      try {
+                        await deleteConceptionByFolderAxios(folder.folder_id);
+                        setHasConception(false);
+                      } catch (err) {
+                        alert(err.message || "Erreur lors de la suppression de la conception.");
+                      }
+                    }}
+                    sx={{ fontSize: 13, color: "#dc2626", "&:hover": { bgcolor: "#fef2f2" } }}
+                  >
+                    Supprimer la conception
+                  </MenuItem>
+                )}
+              </Menu>
+            </Box>
+          ) : (
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<RocketLaunchOutlined sx={{ fontSize: 15 }} />}
+              onClick={() => onLaunchConception(folder.folder_id)}
+              sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: T.green, boxShadow: "none", "&:hover": { bgcolor: T.greenDk, boxShadow: "none" } }}
+            >
+              Conception
+            </Button>
+          )}
           </Stack>
         </Box>
       </Paper>
+
+
 
       {/* GENERAL INFO */}
       <Paper elevation={0} sx={{ mb: 2, p: { xs: 2, md: 2.5 }, borderRadius: "12px", border: `0.5px solid ${T.border}`, bgcolor: T.surface }}>

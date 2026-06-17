@@ -5,7 +5,7 @@ import {
 import { ArrowBack, Download } from "@mui/icons-material";
 
 const T = {
-  text: "#0f172a", sub: "#475569", muted: "#94a3b8",
+  text: "#0f172a", sub: "#072f68", muted: "#072856",
   border: "#e2e8f0", surface: "#ffffff", bg: "#f8fafc",
   green: "#16a34a", greenLt: "#f0fdf4", greenBd: "#bbf7d0",
   blue: "#2563eb", blueLt: "#eff6ff",
