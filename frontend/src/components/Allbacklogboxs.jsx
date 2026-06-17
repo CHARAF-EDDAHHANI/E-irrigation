@@ -118,7 +118,7 @@ function BacklogRow({ box, folders = [], isActive, onClick }) {
     {folderName}
   </Typography>
 
-  {/* Ligne 2 : Le dernier message et le rôle */}
+  {/* Ligne 2 : last message + role */}
   <Typography sx={{
     fontSize: 12, 
     color: unread > 0 ? T.sub : T.muted,

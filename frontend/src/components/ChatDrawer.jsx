@@ -69,14 +69,23 @@ function Bubble({ msg, currentUserId }) {
     <Stack direction={isSelf ? "row-reverse" : "row"} spacing={1} alignItems="flex-end" sx={{ mb: 1.5 }}>
       {!isSelf && (
         <Avatar sx={{ width: 28, height: 28, fontSize: 11, fontWeight: 700, bgcolor: alpha(T.green, 0.15), color: T.green, flexShrink: 0 }}>
-          {(msg.sender_name || "?")[0].toUpperCase()}
+          {(msg.sender_type || "?")[0].toUpperCase()}
         </Avatar>
       )}
       <Box sx={{ maxWidth: "72%" }}>
         {!isSelf && (
           <Typography sx={{ fontSize: 10, fontWeight: 700, color: T.muted, mb: "3px", ml: "4px" }}>
-            {msg.sender_name || "Agent"}
+            {(() => {
+              const roleLabels = {
+                admin: "Admin",
+                agent: "Agent",
+                company: "Société",
+                farmer: "Agriculteur"
+              };
+              return roleLabels[msg.sender_type] || "Message";
+            })()}
           </Typography>
+
         )}
         <Box sx={{
           px: 1.8, py: 1.1,

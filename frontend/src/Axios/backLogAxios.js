@@ -44,6 +44,7 @@ export const sendMessage = async (backlogbox_id, content, file = null) => {
         withCredentials: true,
         // No Content-Type header — axios sets multipart boundary automatically
       });
+      console.log(res);
     } else {
       res = await api.post(
         `/backlog/${backlogbox_id}`,
