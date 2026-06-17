@@ -18,18 +18,18 @@ import ChatDrawer from "./ChatDrawer";
 import { deleteFolderAxios } from "../Axios/folderAxios";
 
 const T = {
-  bg: "#f8fafc", surface: "#ffffff", border: "#e2e8f0",
+  bg: "#f8fafc", surface: "#eaf5ff", border: "#e2e8f0",
   green: "#16a34a", greenDk: "#14532d", greenLt: "#f0fdf4", greenBd: "#bbf7d0",
   red: "#ef4444", redDk: "#b91c1c", redLt: "#fef2f2",
   text: "#0b1b41", sub: "#1d1e20", muted: "#144684",
 };
 
 const PHASE = {
-  prealable:   { bg: "#f3e8ff", color: "#7c3aed", label: "Préalable"  },
-  observation: { bg: "#f1f5f9", color: "#ff2929", label: "Observation" },
-  validation:  { bg: "#dbeafe", color: "#1d4ed8", label: "Validation" },
-  execution:   { bg: "#fff7ed", color: "#c2410c", label: "Exécution"  },
-  cloture:     { bg: "#dcfce7", color: "#15803d", label: "Clôture"    },
+  prealable:  { bg: "#ffeaea", color: "#a65353", label: "Préalable"  },
+  observation:{ bg: "#ffeeee", color: "#ff0909", label: "Observation"},
+  validation: { bg: "#f8eeff", color: "#96199d", label: "Validation" },
+  execution:  { bg: "#ecfffe", color: "#1e72e0", label: "Exécution"  },
+  cloture:    { bg: "#e5ffef", color: "#15cd12", label: "Clôture"    },
 };
 
 const getPhase = (p) => PHASE[p?.toLowerCase()] || { bg: "#f1f5f9", color: "#64748b", label: p || "—" };
@@ -163,21 +163,21 @@ export default function FolderDetail({ folder, onBack, onLaunchConception, onVie
             {folder.deposit_year && (
               <Chip label={`Dépôt ${folder.deposit_year}`} size="small" sx={{ bgcolor: T.greenLt, color: T.green, fontWeight: 500, fontSize: 11, border: `0.5px solid ${T.greenBd}`, height: 28 }} />
             )}
-            <Button size="small" variant="outlined" startIcon={<ChatBubbleOutlineRounded sx={{ fontSize: 14 }} />} onClick={() => setOpenChat(true)}
-              sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, borderColor: T.border, color: T.sub, bgcolor: T.surface, "&:hover": { borderColor: T.green, color: T.green, bgcolor: T.greenLt }, transition: "all 0.15s" }}>
+            <Button size="small" variant="contained" startIcon={<ChatBubbleOutlineRounded sx={{ fontSize: 14 }} />} onClick={() => setOpenChat(true)}
+              sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, borderColor: T.border, color: T.muted, bgcolor: T.surface, "&:hover": { borderColor: T.green, color: T.green, bgcolor: T.greenLt }, transition: "all 0.15s" }}>
               Messages
             </Button>
             {hasConception === null ? (
               <CircularProgress size={18} sx={{ color: T.green }} />
             ) : hasConception ? (
               <Button size="small" variant="contained" startIcon={<VisibilityOutlined sx={{ fontSize: 15 }} />} onClick={() => onViewConception(folder.folder_id)}
-                sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: "#185FA5", boxShadow: "none", "&:hover": { bgcolor: "#0C447C", boxShadow: "none" } }}>
-                Voir la conception
+                sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: "#5197d9", boxShadow: "none", "&:hover": { bgcolor: "#0C447C", boxShadow: "none" } }}>
+                Conception
               </Button>
             ) : (
               <Button size="small" variant="contained" startIcon={<RocketLaunchOutlined sx={{ fontSize: 15 }} />} onClick={() => onLaunchConception(folder.folder_id)}
                 sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 500, fontSize: 13, height: 34, px: 1.75, bgcolor: T.green, boxShadow: "none", "&:hover": { bgcolor: T.greenDk, boxShadow: "none" } }}>
-                Lancer la conception
+                Conception
               </Button>
             )}
           </Stack>

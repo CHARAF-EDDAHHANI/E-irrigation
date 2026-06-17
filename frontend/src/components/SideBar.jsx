@@ -20,8 +20,8 @@ const T = {
   green:    "#4fc67b",
   greenDk:  "#09622b",
   text:     "#149c41",
-  sub:      "#343131",
-  muted:    "#706969",
+  sub:      "#3f473f",
+  muted:    "#3f473f",
   active:   "#f0fdf4",
 };
 

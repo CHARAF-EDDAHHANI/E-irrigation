@@ -17,16 +17,16 @@ const T = {
   border:  "#e2e8f0",
   green:   "#16a34a",
   text:    "#0f172a",
-  sub:     "#475569",
-  muted:   "#94a3b8",
+  sub:     "#3f473f",
+  muted:   "#415443",
 };
 
 const PHASE = {
-  prealable:  { bg: "#f3e8ff", color: "#7c3aed", label: "Préalable"  },
-  observation:{ bg: "#ffeed6", color: "#ff0909", label: "Observation"},
-  validation: { bg: "#dbeafe", color: "#1d4ed8", label: "Validation" },
-  execution:  { bg: "#fff7ed", color: "#c2410c", label: "Exécution"  },
-  cloture:    { bg: "#dcfce7", color: "#15803d", label: "Clôture"    },
+  prealable:  { bg: "#ffeaea", color: "#a65353", label: "Préalable"  },
+  observation:{ bg: "#ffeeee", color: "#ff0909", label: "Observation"},
+  validation: { bg: "#f8eeff", color: "#96199d", label: "Validation" },
+  execution:  { bg: "#ecfffe", color: "#1e72e0", label: "Exécution"  },
+  cloture:    { bg: "#e5ffef", color: "#15cd12", label: "Clôture"    },
 };
 
 const getPhase = (p) => PHASE[p?.toLowerCase()] || { bg: "#f1f5f9", color: "#64748b", label: p || "—" };
