@@ -12,14 +12,14 @@ const G = {
   light:   "#4ade80",
   bg:      "#f0fdf4",
   text:    "#0f172a",
-  muted:   "#94a3b8",
+  muted:   "#6982a6",
 };
 
 // ── CUSTOM LUXURY MICRO-ANIMATIONS ──────────────────────────────────────────
 const pulseGlow = keyframes`
-  0% { transform: scale(0.96); opacity: 0.8; box-shadow: 0 4px 10px rgba(22,163,74,0.2); }
-  50% { transform: scale(1.04); opacity: 1; box-shadow: 0 12px 30px rgba(22,163,74,0.4); }
-  100% { transform: scale(0.96); opacity: 0.8; box-shadow: 0 4px 10px rgba(22,163,74,0.2); }
+  0% { transform: scale(0.96); opacity: 0.8; box-shadow: 0 4px 15px rgba(22,163,74,0.3); }
+  50% { transform: scale(1.04); opacity: 1; box-shadow: 0 12px 35px rgba(22,163,74,0.6); }
+  100% { transform: scale(0.96); opacity: 0.8; box-shadow: 0 4px 15px rgba(22,163,74,0.3); }
 `;
 
 const textFade = keyframes`
@@ -62,35 +62,25 @@ export default function App() {
         fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
       }}>
         
-        {/* Animated Brand Geometric Node */}
-        <Box sx={{
-          width: 72,
-          height: 72,
-          borderRadius: "22px",
-          background: `linear-gradient(135deg, ${G.dark}, ${G.mid})`,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          animation: `${pulseGlow} 2s infinite ease-in-out`,
-          mb: 3
-        }}>
-          <Box component="span" sx={{
-            width: 32,
-            height: 32,
-            border: "3.5px solid white",
-            borderRadius: "50%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-            <Box sx={{ width: 10, height: 10, bgcolor: "white", borderRadius: "50%" }} />
-          </Box>
-        </Box>
+        {/* FIXED: Official Application Logo with Premium Pulsing Green Glow Animation */}
+        <Box 
+          component="img"
+          src="/logonv.png"
+          alt="ORMVAM Logo"
+          sx={{
+            width: 120,
+            height: 120,
+            objectFit: "contain",
+            borderRadius: "20px",
+            animation: `${pulseGlow} 2s infinite ease-in-out`,
+            mb: 2
+          }}
+        />
 
         {/* Minimalist System Status Indicators */}
         <Box sx={{ textAlign: "center", animation: `${textFade} 2s infinite ease-in-out` }}>
           <Typography sx={{ fontSize: 16, fontWeight: 900, color: G.text, letterSpacing: "0.02em", lineHeight: 1 }}>
-            ORMVAM
+            Office Régional de Mise en Valeur Agricole de la Moulouya
           </Typography>
           <Typography sx={{ fontSize: 11, color: G.muted, letterSpacing: "0.12em", textTransform: "uppercase", mt: 0.8, fontWeight: 600 }}>
             Initialisation sécurisée...
@@ -116,4 +106,4 @@ export default function App() {
 
   // ── LOGGED IN -> OPEN DASHBOARD ──
   return <Dashboard user={user} />;
-}
+} 
