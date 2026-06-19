@@ -85,7 +85,7 @@ backend/
 SECRET_KEY=your_secret_key
 DATABASE_URL=postgresql://postgres.xxxx:password@aws-0-eu-west-1.pooler.supabase.com:5432/postgres
 SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_KEY=your_supabase_anon_key
+SUPABASE_KEY=supabase_anon_key
 PORT=5000
 ```
 
