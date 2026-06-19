@@ -1,4 +1,4 @@
-```markdown
+cat > README.md << 'EOF'
 # E-Irrigation — Digital Platform for Irrigation File Management
 ### ORMVAM · Office Régional de Mise en Valeur Agricole de la Moulouya
 
@@ -10,11 +10,11 @@
 E-Irrigation is a full-stack web application designed to digitize and centralize the complete lifecycle of drip irrigation project files at ORMVAM. It replaces paper-based procedures with a secure, role-based, cloud-connected platform accessible from any device.
 
 ### 1.2 Purpose
-- Eliminate manual hydraulic calculations on Excel  
-- Centralize file management with full traceability  
-- Enable structured communication between agents and installation companies  
-- Store all documents and data permanently on cloud infrastructure  
-- Enforce role-based access control on every action  
+- Eliminate manual hydraulic calculations on Excel
+- Centralize file management with full traceability
+- Enable structured communication between agents and installation companies
+- Store all documents and data permanently on cloud infrastructure
+- Enforce role-based access control on every action
 
 ---
 
@@ -36,7 +36,7 @@ E-Irrigation is a full-stack web application designed to digitize and centralize
 ## 3. Project Structure
 
 ### 3.1 Frontend (React)
-```
+```text
 frontend/
 ├── src/
 │   ├── Axios/              # API calls (folderAxios, conceptionAxios, backLogAxios...)
@@ -48,33 +48,33 @@ frontend/
 ```
 
 ### 3.2 Backend (Flask)
-```
+```text
 backend/
 ├── api/
-│   ├── api_folder.py       # Folder CRUD + file upload routes
-│   ├── api_backlog.py      # Messaging routes
-│   ├── api_conception.py   # Hydraulic calculation routes
-│   └── api_user.py         # User management routes
+│   ├── api_folder.py           # Folder CRUD + file upload routes
+│   ├── api_backlog.py          # Messaging routes
+│   ├── api_conception.py       # Hydraulic calculation routes
+│   └── api_user.py             # User management routes
 ├── engine/
-│   ├── extensions.py       # SQLAlchemy db + Supabase client
-│   ├── db_folder.py        # FolderDB SQLAlchemy model
-│   ├── db_user.py          # UserDB SQLAlchemy model
-│   ├── db_backlog.py       # BacklogBoxDB SQLAlchemy model
-│   ├── db_conception.py    # ConceptionDB SQLAlchemy model
-│   ├── db_document.py      # DocumentDB SQLAlchemy model
-│   ├── storage_folder.py   # Folder CRUD operations
-│   ├── storage_user.py     # User CRUD operations
-│   ├── storage_backlog.py  # Backlog CRUD operations
-│   └── storage_conception.py # Conception CRUD operations
+│   ├── extensions.py           # SQLAlchemy db + Supabase client
+│   ├── db_folder.py            # FolderDB SQLAlchemy model
+│   ├── db_user.py              # UserDB SQLAlchemy model
+│   ├── db_backlog.py           # BacklogBoxDB SQLAlchemy model
+│   ├── db_conception.py        # ConceptionDB SQLAlchemy model
+│   ├── db_document.py          # DocumentDB SQLAlchemy model
+│   ├── storage_folder.py       # Folder CRUD operations
+│   ├── storage_user.py         # User CRUD operations
+│   ├── storage_backlog.py      # Backlog CRUD operations
+│   └── storage_conception.py   # Conception CRUD operations
 ├── models/
-│   ├── folder.py           # Folder business logic model
-│   ├── user.py             # User business logic model
-│   ├── backlog_box.py      # BacklogBox + messages model
+│   ├── folder.py               # Folder business logic model
+│   ├── user.py                 # User business logic model
+│   ├── backlog_box.py          # BacklogBox + messages model
 │   └── conception_calculator.py # Hydraulic calculation engine
 ├── utils/
-│   └── auth.py             # JWT authentication middleware
-├── .env                    # Local environment variables
-└── server.py               # Flask app entry point
+│   └── auth.py                 # JWT authentication middleware
+├── .env                        # Local environment variables
+└── server.py                   # Flask app entry point
 ```
 
 ---
@@ -133,7 +133,7 @@ VITE_API_URL=https://e-irrigation.onrender.com/api
 ### 6.2 Document Management (PDF)
 - Upload multiple PDFs during folder creation or update
 - Files stored in **Supabase Storage** bucket `documents/`
-- Filenames sanitized (Arabic/special characters handled)
+- Filenames sanitized (Arabic/special characters handled automatically)
 - Public URLs stored in `documents` PostgreSQL table
 - Download directly from folder detail view
 
@@ -150,7 +150,7 @@ VITE_API_URL=https://e-irrigation.onrender.com/api
 
 ### 6.4 Messaging System (BacklogBox)
 - One private chat thread per folder
-- Participants: ORMVAM team (agents/admin) ↔ company (identified by phone)
+- Participants: ORMVAM team (agents/admin) ↔ company (identified by phone number)
 - Supports text messages + PDF file attachments
 - Messages stored as JSONB array in PostgreSQL
 - Optimistic UI updates for instant feedback
@@ -167,7 +167,7 @@ VITE_API_URL=https://e-irrigation.onrender.com/api
 
 ## 7. Database Schema
 
-```
+```text
 users
   user_id (PK) · fullName · email · password · role · phone · national_id
 
@@ -198,17 +198,17 @@ conceptions
 ## 8. API Endpoints
 
 ### Folders
-```
-POST   /api/create-folder              Create folder + upload PDFs
-GET    /api/allfolders                 List folders (filtered by role)
-GET    /api/folders/:id                Get folder detail + documents
-PUT    /api/folders/:id                Update folder fields (JSON)
-POST   /api/folders/:id/upload         Upload new PDFs to existing folder
-DELETE /api/folders/:id                Delete folder + cascade
+```text
+POST   /api/create-folder          Create folder + upload PDFs (multipart)
+GET    /api/allfolders             List folders (filtered by role)
+GET    /api/folders/:id            Get folder detail + documents
+PUT    /api/folders/:id            Update folder fields (JSON)
+POST   /api/folders/:id/upload     Upload new PDFs to existing folder
+DELETE /api/folders/:id            Delete folder + cascade all related data
 ```
 
 ### Conceptions
-```
+```text
 POST   /api/calculate                  Run hydraulic calculations
 POST   /api/conceptions/save           Save/update conception (upsert)
 GET    /api/conceptions/folder/:id     Get conception by folder
@@ -216,18 +216,18 @@ DELETE /api/conceptions/folder/:id     Delete conception by folder
 ```
 
 ### Messaging
-```
-GET    /api/backlog/folder/:id         Get or create chat for folder
-POST   /api/backlog/:id                Send message (text + optional PDF)
-GET    /api/backlogs                   List all backlogs (filtered by role)
+```text
+GET    /api/backlog/folder/:id     Get or create chat thread for folder
+POST   /api/backlog/:id            Send message (text + optional PDF)
+GET    /api/backlogs               List all backlogs (filtered by role)
 ```
 
 ### Users
-```
-POST   /api/register                   Create user account (admin only)
-POST   /api/login                      Login + set JWT cookie
-GET    /api/auth/me                    Get current user from token
-POST   /api/logout                     Clear session
+```text
+POST   /api/register               Create user account (admin only)
+POST   /api/login                  Login + set JWT cookie
+GET    /api/auth/me                Get current user from token
+POST   /api/logout                 Clear session cookie
 ```
 
 ---
@@ -242,16 +242,16 @@ POST   /api/logout                     Clear session
 ### 9.2 Role-Based Access Control
 - Every route checks `current_user.role` before executing
 - Company users filtered at DB query level by `company_phone`
-- Admin-only actions: delete folder, delete conception, manage accounts
+- Admin-only actions: delete folder, manage accounts
 
 ### 9.3 File Security
 - Filenames sanitized with `unicodedata.normalize` + regex before upload
-- Arabic, accented and special characters automatically converted
-- Files organized by folder path: `folders/{uuid}_{safe_name}.pdf`
+- Arabic, accented and special characters automatically converted to ASCII
+- Files organized by path: `folders/{uuid}_{safe_name}.pdf`
 
 ### 9.4 Database
 - Supabase PostgreSQL with Row Level Security configurable
-- Connection via IPv4 pooler URL (WSL/Render compatible)
+- Connection via IPv4 pooler URL (WSL and Render compatible)
 - All passwords hashed with bcrypt before storage
 
 ---
@@ -264,7 +264,7 @@ cd backend
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env   # fill in your Supabase credentials
+cp .env.example .env
 python3 server.py
 ```
 
@@ -272,7 +272,7 @@ python3 server.py
 ```bash
 cd frontend
 npm install
-cp .env.example .env   # set VITE_API_URL=http://localhost:5000/api
+cp .env.example .env
 npm run dev
 ```
 
@@ -281,25 +281,20 @@ npm run dev
 ## 11. Deployment
 
 ### Render (Backend)
-Environment variables to set in Render dashboard:
-```
-SECRET_KEY       = your_secret_key
-DATABASE_URL     = postgresql://postgres.xxxx:password@aws-0-eu-west-1.pooler.supabase.com:5432/postgres
-SUPABASE_URL     = https://xxxx.supabase.co
-SUPABASE_KEY     = your_anon_key
-PORT             = 5000
+```text
+SECRET_KEY   = your_secret_key
+DATABASE_URL = postgresql://postgres.xxxx:password@aws-0-eu-west-1.pooler.supabase.com:5432/postgres
+SUPABASE_URL = https://xxxx.supabase.co
+SUPABASE_KEY = your_anon_key
+PORT         = 5000
 ```
 
 ### Netlify (Frontend)
-Environment variables to set in Netlify dashboard:
-```
+```text
 VITE_API_URL = https://e-irrigation.onrender.com/api
-```
 
-Build settings:
-```
-Base directory:   frontend
-Build command:    npm run build
+Base directory:    frontend
+Build command:     npm run build
 Publish directory: frontend/dist
 ```
 
@@ -316,8 +311,9 @@ Publish directory: frontend/dist
 | IPv4 pooler URL | Bypasses IPv6 connectivity issues on WSL and Render free tier |
 | FormData for create, JSON for update | Files need multipart; field updates don't — keeps both routes clean |
 | Cascade delete in API layer | FK constraints + explicit deletion order prevents orphan records |
-| `_LIGHTWEIGHT_FIELDS` filter | Reduces payload size on folder list — only loads full data on detail view |
+| `_LIGHTWEIGHT_FIELDS` filter | Reduces payload on folder list — full data loaded only on detail view |
 | `.env.production` for Vite | Auto-switches API URL between local and production without code changes |
+| CSS grid over MUI Grid | Bypasses MUI breakpoint issues caused by narrow parent containers |
 
 ---
 
@@ -342,4 +338,4 @@ E-Irrigation transforms the irrigation file management process at ORMVAM from a 
 ---
 
 *ORMVAM · E-Irrigation v1.0 · Built with React + Flask + Supabase*
-```
+EOF
