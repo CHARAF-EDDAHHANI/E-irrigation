@@ -1,16 +1,13 @@
 import api from "./api";
 
-const BASE = "http://localhost:5000/api";
-
 // ─────────────────────────────────────────────────────────────────────────────
 // HEALTH CHECK
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const checkServerHealth = async () => {
   try {
-    const res = await fetch(`${BASE}/health`);
-    const data = await res.json();
-    return data.status === "ok";
+    const res = await api.get(`/health`);
+    return res.data.status === "ok";
   } catch {
     return false;
   }
