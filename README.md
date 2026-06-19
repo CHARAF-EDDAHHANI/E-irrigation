@@ -1,4 +1,3 @@
-cat > README.md << 'EOF'
 # E-Irrigation — Digital Platform for Irrigation File Management
 ### ORMVAM · Office Régional de Mise en Valeur Agricole de la Moulouya
 
