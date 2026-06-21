@@ -143,7 +143,6 @@ export default function CreateFolder({ onCreate, editFolder = null, onCancel }) 
       } else {
         // Create — FormData with fields + files
         const body = new FormData();
-        console.log("Updating folder:", body, folder_id, data);/////
         Object.entries(form).forEach(([key, val]) => body.append(key, val));
         files.forEach(file => body.append("files", file));
         const created = await CreateFolderAxios(body);
